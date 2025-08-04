@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine # Sử dụng phiên bản PostgreSQL ổn định và nhỏ gọn 
+    container_name: delivery_postgres_db
+    environment:
+      POSTGRES_DB: delivery_db
+      POSTGRES_USER: delivery_user
+      POSTGRES_PASSWORD: delivery_password
+    ports:
+      - "5432:5432" # Mở cổng 5432 của container ra cổng 5432 trên máy host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Lưu trữ dữ liệu vào volume để không mất khi container bị xóa
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U delivery_user -d delivery_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine # Sử dụng phiên bản Redis ổn định và nhỏ gọn [cite: 74]
+    container_name: delivery_redis
+    ports:
+      - "6379:6379" # Mở cổng 6379 của container ra cổng 6379 trên máy host
+    command: redis-server --appendonly yes # Bật AOF để đảm bảo dữ liệu không bị mất khi có sự cố
+    volumes:
+      - redis_data:/data # Lưu trữ dữ liệu vào volume
+
+volumes:
+  postgres_data:
+  redis_data:
