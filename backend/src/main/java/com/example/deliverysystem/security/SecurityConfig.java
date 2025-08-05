@@ -48,11 +48,11 @@ public class SecurityConfig {
                  .requestMatchers("/api/v1/files/**").permitAll()
 
                  // Các endpoint yêu cầu quyền ADMIN
-                 .requestMatchers("/api/v1/admin/**").hasRole(Role.ROLE_ADMIN.name().replace("ROLE_", ""))
+                 .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ROLE_ADMIN.name())
 
                  // Các endpoint yêu cầu quyền SHIPPER
-                 .requestMatchers("/api/v1/shipper/**").hasRole(Role.ROLE_SHIPPER.name().replace("ROLE_", ""))
-
+                 .requestMatchers("/api/v1/shipper/**").hasAuthority(Role.ROLE_SHIPPER.name())
+                 
                  // Các yêu cầu khác cần xác thực
                  .anyRequest().authenticated()
              )
