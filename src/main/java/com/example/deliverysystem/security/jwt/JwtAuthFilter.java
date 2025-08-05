@@ -25,6 +25,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        final String requestURI = request.getRequestURI();
+
+        // Bỏ qua các URL công khai
+        if (requestURI.startsWith("/swagger-ui/") ||
+            requestURI.equals("/swagger-ui.html") ||
+            requestURI.startsWith("/v3/api-docs/") ||
+            requestURI.startsWith("/api/v1/auth/") ||
+            requestURI.startsWith("/api/v1/customer/packages/") ||
+            requestURI.startsWith("/api/v1/files/") ||
+            requestURI.startsWith("/error")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
@@ -33,6 +47,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
         jwt = authHeader.substring(7);
         username = jwtService.extractUsername(jwt);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
