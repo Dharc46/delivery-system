@@ -7,4 +7,3 @@
 
 Sau khi có JWT token, bạn hãy sử dụng nó để thực hiện các request khác.
 
-### Giao diện ở branch front-end
