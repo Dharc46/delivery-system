@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:16-alpine # Sử dụng phiên bản PostgreSQL ổn định và nhỏ gọn 
