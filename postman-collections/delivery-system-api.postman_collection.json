@@ -1,0 +1,2001 @@
+{
+  "info": {
+    "_postman_id": "7303a09f-c895-48b0-8dff-38941cfaa301",
+    "name": "Delivery Management System API",
+    "description": "API documentation for the Last-Mile Delivery Optimization System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "43527654",
+    "_collection_link": "https://khoilam-5046680.postman.co/workspace/KhoiLam's-Workspace~0401b954-7d4b-4861-8a1d-a0af652a2fa8/collection/43527654-7303a09f-c895-48b0-8dff-38941cfaa301?action=share&source=collection_link&creator=43527654"
+  },
+  "item": [
+    {
+      "name": "api",
+      "item": [
+        {
+          "name": "v1",
+          "item": [
+            {
+              "name": "shipper",
+              "item": [
+                {
+                  "name": "packages",
+                  "item": [
+                    {
+                      "name": "{packageId}",
+                      "item": [
+                        {
+                          "name": "status",
+                          "item": [
+                            {
+                              "name": "Update package status and upload proof of delivery",
+                              "request": {
+                                "auth": {
+                                  "type": "bearer",
+                                  "bearer": [
+                                    {
+                                      "key": "token",
+                                      "value": "{{bearerToken}}",
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "method": "PUT",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"proofImage\": \"string\"\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/shipper/packages/:packageId/status?status=CANCELLED&notes=string",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "shipper",
+                                    "packages",
+                                    ":packageId",
+                                    "status"
+                                  ],
+                                  "query": [
+                                    {
+                                      "key": "status",
+                                      "value": "CANCELLED",
+                                      "description": "(Required) "
+                                    },
+                                    {
+                                      "key": "notes",
+                                      "value": "string"
+                                    }
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "packageId",
+                                      "value": "4819",
+                                      "description": "(Required) "
+                                    }
+                                  ]
+                                }
+                              },
+                              "response": [
+                                {
+                                  "name": "OK",
+                                  "originalRequest": {
+                                    "method": "PUT",
+                                    "header": [
+                                      {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                      },
+                                      {
+                                        "key": "Accept",
+                                        "value": "*/*"
+                                      },
+                                      {
+                                        "key": "Authorization",
+                                        "value": "Bearer <token>",
+                                        "description": "Added as a part of security scheme: bearer"
+                                      }
+                                    ],
+                                    "body": {
+                                      "mode": "raw",
+                                      "raw": "{\n  \"proofImage\": \"string\"\n}",
+                                      "options": {
+                                        "raw": {
+                                          "headerFamily": "json",
+                                          "language": "json"
+                                        }
+                                      }
+                                    },
+                                    "url": {
+                                      "raw": "{{baseUrl}}/api/v1/shipper/packages/:packageId/status?status=CANCELLED&notes=string",
+                                      "host": ["{{baseUrl}}"],
+                                      "path": [
+                                        "api",
+                                        "v1",
+                                        "shipper",
+                                        "packages",
+                                        ":packageId",
+                                        "status"
+                                      ],
+                                      "query": [
+                                        {
+                                          "key": "status",
+                                          "value": "CANCELLED",
+                                          "description": "(Required) "
+                                        },
+                                        {
+                                          "key": "notes",
+                                          "value": "string"
+                                        }
+                                      ],
+                                      "variable": [
+                                        {
+                                          "key": "packageId"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "status": "OK",
+                                  "code": 200,
+                                  "_postman_previewlanguage": "text",
+                                  "header": [
+                                    {
+                                      "key": "Content-Type",
+                                      "value": "*/*"
+                                    }
+                                  ],
+                                  "cookie": [],
+                                  "body": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "trips",
+                  "item": [
+                    {
+                      "name": "Get all delivery trips for the authenticated shipper",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/shipper/trips",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "shipper", "trips"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/shipper/trips",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "shipper", "trips"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "[\n  {\n    \"id\": 4325,\n    \"tripDate\": \"1996-03-20\",\n    \"status\": \"COMPLETED\",\n    \"shipperId\": 3306,\n    \"shipperName\": \"string\",\n    \"optimizedRouteData\": \"string\",\n    \"packageIds\": [\n      7847,\n      8590\n    ]\n  },\n  {\n    \"id\": 2067,\n    \"tripDate\": \"2019-08-05\",\n    \"status\": \"COMPLETED\",\n    \"shipperId\": 7116,\n    \"shipperName\": \"string\",\n    \"optimizedRouteData\": \"string\",\n    \"packageIds\": [\n      1198,\n      7707\n    ]\n  }\n]"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "admin",
+              "item": [
+                {
+                  "name": "shippers",
+                  "item": [
+                    {
+                      "name": "{id}",
+                      "item": [
+                        {
+                          "name": "Get shipper by ID",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/shippers/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "shippers", ":id"],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/shippers/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "shippers",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Update an existing shipper",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "PUT",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/shippers/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "shippers", ":id"],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "PUT",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/shippers/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "shippers",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Delete a shipper by ID",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "DELETE",
+                            "header": [],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/shippers/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "shippers", ":id"],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/shippers/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "shippers",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [],
+                              "cookie": [],
+                              "body": ""
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Get all shippers",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/admin/shippers",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "admin", "shippers"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/shippers",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "shippers"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "[\n  {\n    \"fullName\": \"string\",\n    \"password\": \"string\",\n    \"phoneNumber\": \"string\",\n    \"username\": \"string\",\n    \"id\": 9238,\n    \"currentLatitude\": 6200.600889452412,\n    \"currentLongitude\": 8320.97542454755\n  },\n  {\n    \"fullName\": \"string\",\n    \"password\": \"string\",\n    \"phoneNumber\": \"string\",\n    \"username\": \"string\",\n    \"id\": 7139,\n    \"currentLatitude\": 5646.156929274449,\n    \"currentLongitude\": 6550.682853377434\n  }\n]"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Create a new shipper",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/admin/shippers",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "admin", "shippers"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/shippers",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "shippers"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "{\n  \"fullName\": \"string\",\n  \"password\": \"string\",\n  \"phoneNumber\": \"string\",\n  \"username\": \"string\",\n  \"id\": 9475,\n  \"currentLatitude\": 1911.0659316551826,\n  \"currentLongitude\": 5941.546421938546\n}"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "packages",
+                  "item": [
+                    {
+                      "name": "{id}",
+                      "item": [
+                        {
+                          "name": "Get package by ID",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/packages/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "packages", ":id"],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/packages/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "packages",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Update an existing package",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "PUT",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/packages/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "packages", ":id"],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "PUT",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/packages/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "packages",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}"
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Delete a package by ID",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "DELETE",
+                            "header": [],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/packages/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "packages", ":id"],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "DELETE",
+                                "header": [
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/packages/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "packages",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [],
+                              "cookie": [],
+                              "body": ""
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Get all packages",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/admin/packages",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "admin", "packages"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/packages",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "packages"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "[\n  {\n    \"latitude\": 2379.3471598465544,\n    \"longitude\": 5506.161390340249,\n    \"receiverInfo\": \"\",\n    \"senderInfo\": \"string\",\n    \"id\": 9388,\n    \"packageDetails\": \"string\",\n    \"codAmount\": 8722.7829153421,\n    \"status\": \"PENDING\",\n    \"notes\": \"string\",\n    \"proofOfDeliveryUrl\": \"string\",\n    \"deliveryTripId\": 8906\n  },\n  {\n    \"latitude\": 8439.731335351868,\n    \"longitude\": 6773.987311357257,\n    \"receiverInfo\": \"string\",\n    \"senderInfo\": \"string\",\n    \"id\": 5595,\n    \"packageDetails\": \"strin\",\n    \"codAmount\": 858.9998257360799,\n    \"status\": \"PENDING\",\n    \"notes\": \"string\",\n    \"proofOfDeliveryUrl\": \"string\",\n    \"deliveryTripId\": 2344\n  }\n]"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Create a new package",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/admin/packages",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "admin", "packages"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/packages",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "packages"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "delivery-trips",
+                  "item": [
+                    {
+                      "name": "{id}",
+                      "item": [
+                        {
+                          "name": "status",
+                          "item": [
+                            {
+                              "name": "Update status of a delivery trip",
+                              "request": {
+                                "auth": {
+                                  "type": "bearer",
+                                  "bearer": [
+                                    {
+                                      "key": "token",
+                                      "value": "{{bearerToken}}",
+                                      "type": "string"
+                                    }
+                                  ]
+                                },
+                                "method": "PUT",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/delivery-trips/:id/status?status=COMPLETED",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "delivery-trips",
+                                    ":id",
+                                    "status"
+                                  ],
+                                  "query": [
+                                    {
+                                      "key": "status",
+                                      "value": "COMPLETED",
+                                      "description": "(Required) "
+                                    }
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id",
+                                      "value": "4819",
+                                      "description": "(Required) "
+                                    }
+                                  ]
+                                }
+                              },
+                              "response": [
+                                {
+                                  "name": "OK",
+                                  "originalRequest": {
+                                    "method": "PUT",
+                                    "header": [
+                                      {
+                                        "key": "Accept",
+                                        "value": "*/*"
+                                      },
+                                      {
+                                        "key": "Authorization",
+                                        "value": "Bearer <token>",
+                                        "description": "Added as a part of security scheme: bearer"
+                                      }
+                                    ],
+                                    "url": {
+                                      "raw": "{{baseUrl}}/api/v1/admin/delivery-trips/:id/status?status=COMPLETED",
+                                      "host": ["{{baseUrl}}"],
+                                      "path": [
+                                        "api",
+                                        "v1",
+                                        "admin",
+                                        "delivery-trips",
+                                        ":id",
+                                        "status"
+                                      ],
+                                      "query": [
+                                        {
+                                          "key": "status",
+                                          "value": "COMPLETED",
+                                          "description": "(Required) "
+                                        }
+                                      ],
+                                      "variable": [
+                                        {
+                                          "key": "id"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "status": "OK",
+                                  "code": 200,
+                                  "_postman_previewlanguage": "text",
+                                  "header": [
+                                    {
+                                      "key": "Content-Type",
+                                      "value": "*/*"
+                                    }
+                                  ],
+                                  "cookie": [],
+                                  "body": "{\n  \"id\": 8757,\n  \"tripDate\": \"1997-10-08\",\n  \"status\": \"COMPLETED\",\n  \"shipperId\": 3433,\n  \"shipperName\": \"string\",\n  \"optimizedRouteData\": \"s\",\n  \"packageIds\": [\n    9106,\n    58\n  ]\n}"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Get delivery trip by ID",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/delivery-trips/:id",
+                              "host": ["{{baseUrl}}"],
+                              "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "delivery-trips",
+                                ":id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/delivery-trips/:id",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "delivery-trips",
+                                    ":id"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "id"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"id\": 8757,\n  \"tripDate\": \"1997-10-08\",\n  \"status\": \"COMPLETED\",\n  \"shipperId\": 3433,\n  \"shipperName\": \"string\",\n  \"optimizedRouteData\": \"s\",\n  \"packageIds\": [\n    9106,\n    58\n  ]\n}"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "optimize",
+                      "item": [
+                        {
+                          "name": "Optimize and create a new delivery trip",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"shipperId\": 6341,\n  \"packageIds\": [\n    148,\n    4865\n  ]\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/delivery-trips/optimize",
+                              "host": ["{{baseUrl}}"],
+                              "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "delivery-trips",
+                                "optimize"
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "{\n  \"shipperId\": 6341,\n  \"packageIds\": [\n    148,\n    4865\n  ]\n}",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/delivery-trips/optimize",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "delivery-trips",
+                                    "optimize"
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"id\": 8757,\n  \"tripDate\": \"1997-10-08\",\n  \"status\": \"COMPLETED\",\n  \"shipperId\": 3433,\n  \"shipperName\": \"string\",\n  \"optimizedRouteData\": \"s\",\n  \"packageIds\": [\n    9106,\n    58\n  ]\n}"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Get all delivery trips",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/admin/delivery-trips",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "admin", "delivery-trips"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/delivery-trips",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "admin", "delivery-trips"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "[\n  {\n    \"id\": 4325,\n    \"tripDate\": \"1996-03-20\",\n    \"status\": \"COMPLETED\",\n    \"shipperId\": 3306,\n    \"shipperName\": \"string\",\n    \"optimizedRouteData\": \"string\",\n    \"packageIds\": [\n      7847,\n      8590\n    ]\n  },\n  {\n    \"id\": 2067,\n    \"tripDate\": \"2019-08-05\",\n    \"status\": \"COMPLETED\",\n    \"shipperId\": 7116,\n    \"shipperName\": \"string\",\n    \"optimizedRouteData\": \"string\",\n    \"packageIds\": [\n      1198,\n      7707\n    ]\n  }\n]"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "cod-reconciliation",
+                  "item": [
+                    {
+                      "name": "confirm",
+                      "item": [
+                        {
+                          "name": "Confirm COD reconciliation for selected packages",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "[\n  2700,\n  5792\n]",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/cod-reconciliation/confirm",
+                              "host": ["{{baseUrl}}"],
+                              "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "cod-reconciliation",
+                                "confirm"
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "POST",
+                                "header": [
+                                  {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                  },
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "body": {
+                                  "mode": "raw",
+                                  "raw": "[\n  2700,\n  5792\n]",
+                                  "options": {
+                                    "raw": {
+                                      "headerFamily": "json",
+                                      "language": "json"
+                                    }
+                                  }
+                                },
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/cod-reconciliation/confirm",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "cod-reconciliation",
+                                    "confirm"
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "string"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Get packages for COD reconciliation",
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/admin/cod-reconciliation",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "admin", "cod-reconciliation"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/cod-reconciliation",
+                              "host": ["{{baseUrl}}"],
+                              "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "cod-reconciliation"
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "[\n  {\n    \"id\": 5929,\n    \"senderInfo\": \"string\",\n    \"receiverInfo\": \"string\",\n    \"latitude\": 2298.701456460941,\n    \"longitude\": 7955.340474176959,\n    \"packageDetails\": \"string\",\n    \"codAmount\": 5214.714509578964,\n    \"status\": \"FAILED\",\n    \"notes\": \"string\",\n    \"proofOfDeliveryUrl\": \"string\",\n    \"deliveryTrip\": {\n      \"id\": 292,\n      \"tripDate\": \"2021-05-10\",\n      \"status\": \"IN_PROGRESS\",\n      \"shipper\": {\n        \"id\": 5668,\n        \"fullName\": \"string\",\n        \"phoneNumber\": \"string\",\n        \"currentLatitude\": 6312.261694597159,\n        \"currentLongitude\": 5449.655616257154,\n        \"user\": {\n          \"id\": 3976,\n          \"username\": \"string\",\n          \"password\": \"string\",\n          \"role\": \"ROLE_SHIPPER\",\n          \"enabled\": true,\n          \"authorities\": [\n            {\n              \"authority\": \"string\"\n            },\n            {\n              \"authority\": \"string\"\n            }\n          ],\n          \"accountNonExpired\": true,\n          \"credentialsNonExpired\": false,\n          \"accountNonLocked\": false\n        }\n      },\n      \"optimizedRouteData\": \"string\",\n      \"packages\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/Package detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/Package detected>\"\n        }\n      ]\n    }\n  },\n  {\n    \"id\": 8940,\n    \"senderInfo\": \"string\",\n    \"receiverInfo\": \"string\",\n    \"latitude\": 6055.6833680639775,\n    \"longitude\": 9946.59176499592,\n    \"packageDetails\": \"string\",\n    \"codAmount\": 8493.126314339117,\n    \"status\": \"FAILED\",\n    \"notes\": \"string\",\n    \"proofOfDeliveryUrl\": \"string\",\n    \"deliveryTrip\": {\n      \"id\": 3581,\n      \"tripDate\": \"1977-09-29\",\n      \"status\": \"IN_PROGRESS\",\n      \"shipper\": {\n        \"id\": 7680,\n        \"fullName\": \"string\",\n        \"phoneNumber\": \"string\",\n        \"currentLatitude\": 3039.533140007522,\n        \"currentLongitude\": 5223.692337529651,\n        \"user\": {\n          \"id\": 7894,\n          \"username\": \"string\",\n          \"password\": \"string\",\n          \"role\": \"ROLE_CUSTOMER\",\n          \"enabled\": true,\n          \"authorities\": [\n            {\n              \"authority\": \"string\"\n            },\n            {\n              \"authority\": \"string\"\n            }\n          ],\n          \"accountNonExpired\": true,\n          \"credentialsNonExpired\": true,\n          \"accountNonLocked\": false\n        }\n      },\n      \"optimizedRouteData\": \"string\",\n      \"packages\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/Package detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/Package detected>\"\n        }\n      ]\n    }\n  }\n]"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "dashboard",
+                  "item": [
+                    {
+                      "name": "stats",
+                      "item": [
+                        {
+                          "name": "Get dashboard statistics",
+                          "request": {
+                            "auth": {
+                              "type": "bearer",
+                              "bearer": [
+                                {
+                                  "key": "token",
+                                  "value": "{{bearerToken}}",
+                                  "type": "string"
+                                }
+                              ]
+                            },
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/admin/dashboard/stats",
+                              "host": ["{{baseUrl}}"],
+                              "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "dashboard",
+                                "stats"
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/admin/dashboard/stats",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "admin",
+                                    "dashboard",
+                                    "stats"
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"key_0\": {}\n}"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "auth",
+              "item": [
+                {
+                  "name": "register",
+                  "item": [
+                    {
+                      "name": "Register a new user",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"id\": 4012,\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"role\": \"ROLE_ADMIN\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/auth/register",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "auth", "register"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"id\": 4012,\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"role\": \"ROLE_ADMIN\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/auth/register",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "auth", "register"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "{\n  \"id\": 4012,\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"role\": \"ROLE_ADMIN\"\n}"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "login",
+                  "item": [
+                    {
+                      "name": "Authenticate user and get JWT token",
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"username\": \"string\",\n  \"password\": \"\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/v1/auth/login",
+                          "host": ["{{baseUrl}}"],
+                          "path": ["api", "v1", "auth", "login"]
+                        }
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              },
+                              {
+                                "key": "Authorization",
+                                "value": "Bearer <token>",
+                                "description": "Added as a part of security scheme: bearer"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"username\": \"string\",\n  \"password\": \"\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/auth/login",
+                              "host": ["{{baseUrl}}"],
+                              "path": ["api", "v1", "auth", "login"]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "{\n  \"token\": \"string\"\n}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "customer",
+              "item": [
+                {
+                  "name": "packages",
+                  "item": [
+                    {
+                      "name": "{packageId}",
+                      "item": [
+                        {
+                          "name": "Get package details by ID (for public tracking)",
+                          "request": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/v1/customer/packages/:packageId",
+                              "host": ["{{baseUrl}}"],
+                              "path": [
+                                "api",
+                                "v1",
+                                "customer",
+                                "packages",
+                                ":packageId"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "packageId",
+                                  "value": "4819",
+                                  "description": "(Required) "
+                                }
+                              ]
+                            }
+                          },
+                          "response": [
+                            {
+                              "name": "OK",
+                              "originalRequest": {
+                                "method": "GET",
+                                "header": [
+                                  {
+                                    "key": "Accept",
+                                    "value": "*/*"
+                                  },
+                                  {
+                                    "key": "Authorization",
+                                    "value": "Bearer <token>",
+                                    "description": "Added as a part of security scheme: bearer"
+                                  }
+                                ],
+                                "url": {
+                                  "raw": "{{baseUrl}}/api/v1/customer/packages/:packageId",
+                                  "host": ["{{baseUrl}}"],
+                                  "path": [
+                                    "api",
+                                    "v1",
+                                    "customer",
+                                    "packages",
+                                    ":packageId"
+                                  ],
+                                  "variable": [
+                                    {
+                                      "key": "packageId"
+                                    }
+                                  ]
+                                }
+                              },
+                              "status": "OK",
+                              "code": 200,
+                              "_postman_previewlanguage": "text",
+                              "header": [
+                                {
+                                  "key": "Content-Type",
+                                  "value": "*/*"
+                                }
+                              ],
+                              "cookie": [],
+                              "body": "{\n  \"latitude\": 8021.941152303715,\n  \"longitude\": 6575.804296953762,\n  \"receiverInfo\": \"string\",\n  \"senderInfo\": \"string\",\n  \"id\": 7124,\n  \"packageDetails\": \"string\",\n  \"codAmount\": 6799.638594238198,\n  \"status\": \"FAILED\",\n  \"notes\": \"string\",\n  \"proofOfDeliveryUrl\": \"string\",\n  \"deliveryTripId\": 3700\n}"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
