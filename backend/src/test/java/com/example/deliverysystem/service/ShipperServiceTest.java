@@ -50,7 +50,6 @@ public class ShipperServiceTest {
 
     @Test
     void createShipper_Success() {
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(shipperRepository.save(any(Shipper.class))).thenReturn(shipper);
