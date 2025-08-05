@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authApi from '../api/authApi';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -12,11 +13,17 @@ const LoginPage = () => {
         e.preventDefault();
         try {
             const response = await authApi.login({ username, password });
-            localStorage.setItem('token', response.data.token);
-            // Bạn cần thêm logic để lấy role từ response hoặc từ token
-            // Hiện tại, giả định bạn có thể lấy role từ server và lưu vào localStorage
-            const role = "ROLE_ADMIN"; // TODO: Thay đổi bằng cách lấy role thực tế từ API
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+
+            // Giải mã token để lấy role
+            const decodedToken = jwtDecode(token);
+            const role = decodedToken.role; // <--- Dòng này sẽ lấy role từ payload của token
+            
             localStorage.setItem('role', role);
+
+            console.log("Giá trị của 'role' nhận được:", role);
+            console.log("Kết quả so sánh role với 'ROLE_ADMIN':", role === 'ROLE_ADMIN');
 
             if (role === 'ROLE_ADMIN') {
                 navigate('/admin');
