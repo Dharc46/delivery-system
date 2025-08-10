@@ -48,7 +48,16 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        // Thêm role vào extraClaims (lấy từ authorities của UserDetails)
+        // Giả sử authorities chứa role, ví dụ: ROLE_ADMIN
+        String role = userDetails.getAuthorities().stream()
+                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                .findFirst() // Hoặc xử lý nhiều role nếu cần
+                .orElse("ROLE_USER"); // Default nếu không có
+        extraClaims.put("role", role); // Thêm key "role" với giá trị role
+
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(
