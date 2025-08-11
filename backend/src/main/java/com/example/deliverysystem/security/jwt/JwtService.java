@@ -54,7 +54,7 @@ public class JwtService {
         String role = userDetails.getAuthorities().stream()
                 .map(grantedAuthority -> grantedAuthority.getAuthority())
                 .findFirst() // Hoặc xử lý nhiều role nếu cần
-                .orElse("ROLE_USER"); // Default nếu không có
+                .orElse("ROLE_CUSTOMER"); // Default nếu không có
         extraClaims.put("role", role); // Thêm key "role" với giá trị role
 
         return generateToken(extraClaims, userDetails);
