@@ -1,0 +1,243 @@
+/* Header.css */
+* {
+  --primary-color: #AA81F3;
+  --text-color: #3A4554;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  padding: 0 1.5rem;
+  background: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.logo-icon {
+  max-height: 18px;
+  width: auto;
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.6);
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #FFFFFF;
+  text-decoration: none;
+  transition: color 150ms;
+  line-height: 1;
+}
+
+.nav-link:hover {
+  color: #E5E7EB;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 500px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 150ms, color 150ms;
+}
+
+.button-primary {
+  background-color: #FFFFFF;
+  color: var(--primary-color);
+  border: none;
+}
+
+.button-primary:hover {
+  background-color: #F3F4F6;
+}
+
+.button-secondary {
+  background-color: #FFFFFF;
+  border: none;
+  color: var(--primary-color);
+}
+
+.button-secondary:hover {
+  background-color: #F3F4F6;
+  color: var(--primary-color);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 2px;
+  background: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+.nav-menu.open .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav-menu.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-menu.open .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: transparent !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FFFFFF !important;
+}
+.dropdown-toggle:hover {
+  background: #FFFFFF !important;
+  color: var(--primary-color) !important;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  list-style: none;
+  margin: 0;
+  min-width: 200px;
+  box-sizing: border-box;
+  padding: 0.5rem 0;
+  z-index: 1000;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-menu.show {
+  max-height: 500px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms;
+  line-height: 1.2;
+}
+
+.dropdown-item:hover {
+  background-color: #F3F4F6;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    position: relative;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--primary-color);
+    width: 200px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-menu.open .nav-links {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .dropdown-menu {
+    position: static;
+    background: #FFFFFF;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+  }
+
+  .dropdown-menu.show {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Button size normalization: đảm bảo <a> và <button> giống hệt nhau === */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;          /* cùng chiều cao */
+  padding: 0 16px;       /* padding ngang đồng nhất */
+  box-sizing: border-box;
+  line-height: 1;        /* tránh đội chiều cao do line-height mặc định */
+  text-decoration: none; /* bỏ gạch chân cho <a> */
+}

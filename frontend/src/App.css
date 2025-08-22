@@ -1,22 +1,30 @@
 /* App.css */
-.dynamic-background {
-  position: fixed; /* Thay đổi từ absolute thành fixed */
-  top: 0;
-  left: 0;
-  width: 100vw; /* Sử dụng viewport width */
-  height: 100vh; /* Sử dụng viewport height */
-  z-index: -1;
-  pointer-events: none;
+* {
+  --primary-color: #AA81F3;
+  --text-color: #3A4554;
 }
 
-/* Đảm bảo body và html có background trong suốt */
+.app-container {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Đảm bảo body và html không có nền */
 body, html {
   margin: 0;
   padding: 0;
-  background: transparent;
+  background: none;
 }
 
 #root {
   position: relative;
   min-height: 100vh;
+}
+
+.main-content {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Trừ chiều cao của header */
 }

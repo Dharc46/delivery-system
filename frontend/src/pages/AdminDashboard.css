@@ -1,0 +1,311 @@
+/* AdminDashboard.css — theme tối + header tách riêng + layout 3 cột */
+.admin-dashboard-page {
+  --sidebar-w: 200px;
+  --rightbar-w: 280px;
+  --app-header-h: 64px;
+  --pad: 12px;
+  --gap: 12px;
+  --radius: 8px;
+
+  --bg: #1e1e2f;
+  --panel: #2a2a3d;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --line: #3f3f46;
+  --accent: #3b82f6;
+  --success: #22c55e;
+  --warn: #f59e0b;
+
+  position: fixed;     /* chiếm toàn bộ viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Header trên cùng */
+.ad-header {
+  height: var(--app-header-h);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  z-index: 10;
+}
+.ad-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+.ad-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Layout 3 cột dưới header */
+.ad-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--rightbar-w);
+  height: 100%;   /* tràn hết chiều cao còn lại */
+  width: 100%;    /* tràn full màn hình ngang */
+}
+/* Modifier: không có rightbar (dùng cho tab Table) */
+.ad-layout.no-rightbar {
+  grid-template-columns: var(--sidebar-w) 1fr !important;
+}
+
+/* Modifier: có rightbar (Map/Analyze) */
+.ad-layout.has-rightbar {
+  grid-template-columns: var(--sidebar-w) 1fr var(--rightbar-w);
+}
+
+
+/* Sidebar trái */
+.ad-sidebar {
+  background: #181825;
+  border-right: 1px solid var(--line);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.ad-logo {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+.ad-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ad-menu li {
+  padding: 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--muted);
+}
+.ad-menu li:hover,
+.ad-menu li.active {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.ad-main {
+  padding: var(--gap);  /* top/right/bottom/left đều như nhau */
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+.ad-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--gap);
+}
+.ad-stat {
+  background: var(--panel);
+  padding: 12px;
+  border-radius: var(--radius);
+}
+.ad-stat-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.ad-stat-value {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Map */
+.ad-map {
+  flex: 1;
+  background: var(--panel);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ad-map-placeholder {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Sidebar phải */
+.ad-rightbar {
+  background: #181825;
+  border-left: 1px solid var(--line);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ad-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.ad-task-group h3 {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: var(--muted);
+}
+.ad-task-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ad-task {
+  background: var(--panel);
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 6px;
+
+  cursor: pointer;
+}
+.ad-empty {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 8px;
+  text-align: center;
+}
+
+/* Mobile responsive */
+@media (max-width: 992px) {
+  .ad-layout {
+    grid-template-columns: var(--sidebar-w) 1fr;
+  }
+  .ad-rightbar {
+    display: none;
+  }
+}
+
+/* Đảm bảo container Leaflet full-size trong vùng .ad-map */
+.admin-dashboard-page .ad-map .leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: var(--radius);
+}
+
+/* Search overlay trong bản đồ */
+.admin-dashboard-page .ad-map-search{
+  position: absolute;
+  z-index: 1000;
+  top: 12px;
+  left: 12px;
+  right: 12px; /* trên mobile cho dễ bấm; trên desktop có thể giảm */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none; /* để click vào map không bị chặn; riêng input bật lại */
+}
+
+.admin-dashboard-page .ad-search-input{
+  pointer-events: auto;
+  width: 100%;
+  max-width: 520px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+.admin-dashboard-page .ad-search-status{
+  pointer-events: auto;
+  display: inline-block;
+  width: fit-content;
+  font-size: 12px;
+  color: var(--muted);
+  background: rgba(0,0,0,.35);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.admin-dashboard-page .ad-search-dropdown{
+  pointer-events: auto;
+  width: 100%;
+  max-width: 520px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-dashboard-page .ad-search-item{
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+}
+.admin-dashboard-page .ad-search-item:last-child{ border-bottom: none; }
+.admin-dashboard-page .ad-search-item:hover{ background: #30304a; }
+
+/* Bản đồ full-size (nếu chưa có) */
+.admin-dashboard-page .ad-map .leaflet-container{
+  height: 100%;
+  width: 100%;
+  border-radius: var(--radius);
+}
+
+/* Đảm bảo .ad-map là relative để overlay định vị tuyệt đối bên trong */
+.admin-dashboard-page .ad-map{
+  position: relative;
+}
+
+
+/* -------- Toolbar & Buttons -------- */
+.ad-toolbar{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; background: var(--panel); border-radius: var(--radius);
+  padding: 8px 10px; border: 1px solid var(--line);
+}
+.ad-btn{
+  padding:8px 10px; border-radius:8px; border:1px solid var(--line);
+  background:#2f2f44; color: var(--text); cursor:pointer; font-size:13px;
+}
+.ad-btn:hover{ filter: brightness(1.05); }
+.ad-btn-ghost{
+  padding:6px 8px; border-radius:8px; border:1px solid transparent;
+  background: transparent; color: var(--muted); cursor:pointer; font-size:13px;
+}
+.ad-label{ font-size:12px; color: var(--muted); margin-right:6px; }
+.ad-select, .ad-input{
+  background: #1f1f2e; color: var(--text); border:1px solid var(--line);
+  border-radius:8px; padding:8px 10px; font-size:13px; outline:none;
+}
+.ad-chip-link{
+  background:#3a3144; border:1px dashed #5b5561; color:#e5e7eb; padding:3px 8px;
+  border-radius:999px; cursor:pointer; font-size:12px;
+}
+.ad-chip-link:hover{ background:#463a55; }
+
+/* -------- Modal -------- */
+.ad-modal{
+  position: fixed; inset:0; background: rgba(0,0,0,0.5);
+  display:flex; align-items:center; justify-content:center; z-index: 10000;
+}
+.ad-modal-content{
+  width: min(520px, 92vw); background: #1b1b2a; border:1px solid var(--line);
+  border-radius:12px; padding: 12px;
+}
+.ad-modal-header{
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
+}
+.ad-form{
+  display:grid; grid-template-columns: 120px 1fr; gap:8px; align-items:center;
+}
+.ad-modal-actions{
+  display:flex; gap:8px; justify-content:flex-end; margin-top:12px;
+}

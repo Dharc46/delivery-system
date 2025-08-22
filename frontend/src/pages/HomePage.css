@@ -1,0 +1,215 @@
+* {
+  --primary-color: #AA81F3;
+  --text-color: #3A4554;
+}
+
+.home-container {
+  min-height: 100vh;
+  background: #FFFFFF; /* Nền trắng để tối giản */
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, 'sans-serif';
+  padding-top: 80px; /* Tăng padding để bù cho header */
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  gap: 2rem;
+  overflow: hidden; /* Đảm bảo không bị cắt khi animation */
+}
+
+@media (min-width: 768px) {
+  .hero-section {
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+.hero-content {
+  flex: 1;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .hero-content {
+    text-align: left;
+  }
+}
+
+.hero-image {
+  flex: 1;
+  max-width: 100%;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+}
+
+.text-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .text-title {
+    font-size: 3rem;
+  }
+}
+
+.paragraph {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center; /* Căn giữa nút */
+}
+
+@media (min-width: 768px) {
+  .cta-buttons {
+    justify-content: center; /* Căn giữa trên desktop để đồng bộ với tiêu đề */
+  }
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 500px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 150ms, color 150ms;
+}
+
+.button-primary {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+  border: none;
+}
+
+.button-primary:hover {
+  background-color: #8B5CF6; /* Tím đậm hơn khi hover */
+}
+
+.button-secondary {
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.button-secondary:hover {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+}
+
+/* Features Section */
+.features-section {
+  padding: 4rem 2rem;
+  background: #F8FAFC;
+  text-align: center;
+  overflow: hidden; /* Đảm bảo không bị cắt khi animation */
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+@media (min-width: 768px) {
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.feature-card {
+  background: #FFFFFF;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feature-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+/* Stats Section */
+.stats-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  overflow: hidden; /* Đảm bảo không bị cắt khi animation */
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-item {
+  padding: 1rem;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 4rem 2rem;
+  background: var(--primary-color);
+  color: #FFFFFF;
+  text-align: center;
+  overflow: hidden; /* Đảm bảo không bị cắt khi animation */
+}
+
+.cta-section .text-title {
+  color: #FFFFFF;
+}
+
+.cta-section .paragraph {
+  color: #E5E7EB;
+}
+
+.cta-section .button-primary {
+  background: #FFFFFF;
+  color: var(--primary-color);
+}
+
+.cta-section .button-primary:hover {
+  background: #F3F4F6;
+}
+
+/* Utility */
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-center {
+  text-align: center;
+}

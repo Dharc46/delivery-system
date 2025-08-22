@@ -1,5 +1,4 @@
-// src/App.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoginPage from './pages/LoginPage';
@@ -7,13 +6,12 @@ import RegisterPage from './pages/RegisterPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ShipperDashboard from './pages/ShipperDashboard';
 import CustomerTracking from './pages/CustomerTracking';
+import HomePage from './pages/HomePage';
 import Header from './components/Header';
 import PrivateRoute from './components/PrivateRoute';
-import WorkingBackground from './components/WorkingBackground';
 import './App.css';
 
 // Define the animation variants for the original page transitions (slide)
-// Hiệu ứng trượt sang hai bên cho Login và Register
 const pageVariants = {
   initial: {
     opacity: 0,
@@ -40,7 +38,6 @@ const pageTransition = {
 };
 
 // Define the animation variants for the new zoom effect
-// Hiệu ứng thu phóng cho Admin Dashboard
 const zoomVariants = {
   initial: {
     scale: 0,
@@ -75,9 +72,19 @@ function App() {
 function RouterWrapper() {
   const location = useLocation();
 
+  // Cuộn lên đầu trang khi thay đổi route
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    };
+    scrollToTop();
+    // Thêm setTimeout để đảm bảo cuộn sau khi render hoàn tất
+    const timer = setTimeout(scrollToTop, 0);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
   return (
-    <div>
-      <WorkingBackground />
+    <div className="app-container">
       <Header />
       <div className="main-content">
         <AnimatePresence mode="wait">
@@ -149,11 +156,27 @@ function RouterWrapper() {
                 </PrivateRoute>
               } 
             />
-
+            <Route
+              path="/"
+              element={
+                <motion.div
+                  key="home-page"
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  transition={pageTransition}
+                >
+                  <HomePage />
+                </motion.div>
+              }
+            />
             {/* Các route không có hiệu ứng chuyển cảnh */}
             <Route path="/track" element={<CustomerTracking />} />
             <Route path="/track/:id" element={<CustomerTracking />} />
-            <Route path="*" element={<div>404 Not Found</div>} />
+            <Route path="/features/route-optimization" element={<div>Tối ưu hóa tuyến đường - Đang phát triển</div>} />
+            <Route path="/features/real-time-tracking" element={<div>Theo dõi thời gian thực - Đang phát triển</div>} />
+            <Route path="/features/reporting" element={<div>Báo cáo thông minh - Đang phát triển</div>} />
           </Routes>
         </AnimatePresence>
       </div>

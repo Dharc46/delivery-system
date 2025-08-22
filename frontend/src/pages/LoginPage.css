@@ -1,0 +1,203 @@
+* {
+  --primary-color: #AA81F3;
+  --text-color: #3A4554;
+}
+
+/* Bọc trang để căn giữa, mượt khi chuyển cảnh */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* Container login: rộng hơn, vẫn responsive */
+.modal-container {
+  position: static;
+  transform: none;
+  width: 100%;
+  max-width: clamp(600px, 85vw, 900px);
+  box-sizing: border-box;
+  border-radius: 18px;
+  border: 0.5px solid #d8d8d8;
+  background-color: rgba(255,255,255,0.95);
+  padding: 30px;
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, "sans-serif";
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  backdrop-filter: blur(20px) saturate(5);
+  animation: modalFadeIn 220ms ease;
+}
+
+/* Tăng “độ dài” (rộng) trên desktop, nhưng vẫn giới hạn */
+@media (min-width: 640px) {
+  .modal-container {
+    max-width: clamp(680px, 75vw, 900px);
+    min-height: 160px;
+  }
+}
+
+/* Safety override: nếu có rule nào khác còn ghi đè, dùng selector mạnh hơn */
+.login-page .modal-container {
+  max-width: clamp(680px, 75vw, 900px) !important;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-container-inner {
+  width: 100%;
+  min-height: 79px;
+  padding-bottom: 0;
+}
+
+.text-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 18px 0;
+  text-align: center;
+  word-break: break-word;
+}
+
+.paragraph {
+  color: var(--text-color);
+  font-size: 14px;
+  margin: 0 0 18px 0;
+  text-align: center;
+  word-break: break-word;
+}
+
+.complete-options-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.toggles-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 0 16px 0;
+  align-content: center;
+  flex-wrap: nowrap;
+  justify-content: center;
+  padding-inline: 1px;
+}
+
+.toggle-label {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  height: auto;
+  padding-left: 0;
+  text-shadow: none;
+  word-wrap: break-word;
+}
+
+.toggle-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 1rem;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  transition: border-color 150ms ease;
+  box-sizing: border-box;
+}
+
+.toggle-input:focus {
+  outline: 2px solid rgba(51, 157, 255, 0.7);
+  border-color: var(--primary-color);
+}
+
+.button {
+  min-height: 42px;
+  border-radius: 500px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  opacity: 0.9;
+  border: 1px solid var(--primary-color);
+  box-sizing: border-box;
+  cursor: pointer;
+  filter: brightness(100%);
+  font-family: inherit;
+  text-align: center;
+  padding: 10px;
+  transition: filter 150ms, background-color 150ms;
+}
+
+.button:hover {
+  background-color: var(--primary-color);
+}
+
+.button:hover span {
+  color: #ffffff;
+}
+
+.button-base-text {
+  color: var(--primary-color);
+  display: block;
+  text-align: center;
+  transition: color 150ms;
+}
+
+.button-primary-text {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.bottom-menu-container {
+  width: 100%;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 12px 0 0 0;
+  box-sizing: border-box;
+}
+
+.bottom-menu-item {
+  background: unset;
+  border: unset;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  min-width: 0;
+  text-align: center;
+  line-height: 1.5em;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: text-decoration 150ms;
+  text-decoration: underline;
+  text-decoration-color: rgba(1, 1, 1, 0);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.bottom-menu-item:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(1, 1, 1, 1);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* ---- FIX WIDTH OVERRIDE (put this at the end of file) ---- */
+.login-page > .modal-container {
+  width: min(460px, 92vw) !important;  /* rộng tối đa 960px, vẫn responsive */
+  max-width: none !important;          /* loại bỏ max-width cũ 720px */
+}

@@ -1,0 +1,182 @@
+/* RegisterPage.css */
+:root {
+  --primary-color: #AA81F3;
+  --text-color: #3A4554;
+}
+
+/* Đảm bảo khối trang bao quanh căn giữa */
+.register-page {
+  padding-top: 88px;
+  padding-bottom: 32px;
+  display: flex;            /* NEW */
+  justify-content: center;  /* NEW */
+}
+
+/* Tăng độ ưu tiên: .register-page .register-container */
+.register-page .register-container {
+  box-sizing: border-box;
+  width: min(96vw, 800px) !important; /* chiếm ~96% màn, nhưng không quá 1500px */
+  max-width: none !important;          /* vô hiệu max-width cũ bị ghi đè ở nơi khác */
+  padding: 2rem;
+  margin: 2rem auto 0;
+}
+
+.register-container {
+    padding: 2rem;
+    width: 95%;             /* chiếm gần hết màn hình nhỏ */
+    max-width: 500px;       /* không quá 500px trên màn lớn */
+    margin: 2rem auto;      /* căn giữa */
+    background: #fff;       /* hoặc giữ transparent nếu bạn thích overlay */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+.register-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #fff;
+  padding: 0.75rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 0.9rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.required {
+  color: #dc3545;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #2c3e50;
+  transition: all 0.2s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(170, 129, 243, 0.18);
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.field-hint,
+.field-error {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.field-hint {
+  color: #6b7280;
+}
+
+.field-error {
+  color: #dc3545;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 16px rgba(170, 129, 243, 0.28);
+}
+
+.submit-button:hover {
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled,
+.submit-button.disabled {
+  background: #c8c8cf;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.login-link-container {
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.login-text {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.login-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* Giữ responsive cho màn rất nhỏ */
+@media (max-width: 420px) {
+  .register-page .register-container {
+    width: calc(100vw - 24px);
+    margin: 0 12px;
+    padding: 1.25rem;
+  }
+}
