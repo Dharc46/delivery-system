@@ -1,4 +1,5 @@
-// AdminDashboard.jsx — Admin Dashboard with Map/Table/Analyze tabs + dark table view
+// AdminDashboard.jsx — Admin Dashboard with Route Preview
+// v4: Fix ReferenceError (senderAddress not defined) + robust address extraction helpers
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import adminApi from "../api/adminApi";
 import { normalizePackage } from "../adapters/packageAdapter";
@@ -11,6 +12,9 @@ import {
   Popup,
   CircleMarker,
   useMap,
+  Polyline,
+  Marker,
+  Tooltip,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -151,6 +155,195 @@ function TasksTable({ rows, onAssignRequested }) {
   );
 }
 
+/* ==== Helpers: parse & extract addresses + geocoding ==== */
+
+// Tách địa chỉ/tên/SĐT từ chuỗi "Tên - SĐT - Địa chỉ"
+function parseContactString(raw) {
+  if (!raw) return { name: "", phone: "", address: "" };
+  const parts = String(raw)
+    .split(" - ")
+    .map((s) => s.trim());
+  return {
+    name: parts[0] || "",
+    phone: parts[1] || "",
+    address: parts.slice(2).join(" - ") || "", // phòng trường hợp địa chỉ cũng có dấu "-"
+  };
+}
+
+// Lấy địa chỉ người gửi từ nhiều field có thể có
+function getSenderAddressFromPackage(pkg) {
+  // 1) Ưu tiên senderInfo dạng "Tên - SĐT - Địa chỉ"
+  if (pkg?.senderInfo) {
+    const parsed = parseContactString(pkg.senderInfo);
+    if (parsed.address) return parsed.address;
+  }
+  // 2) Dạng đã normalize sang object
+  if (pkg?._sender?.address) return pkg._sender.address;
+  // 3) Raw gốc
+  if (pkg?._raw?.senderInfo) {
+    const parsed = parseContactString(pkg._raw.senderInfo);
+    if (parsed.address) return parsed.address;
+  }
+  // 4) Alias khác
+  return (
+    pkg?.originAddress || pkg?.fromAddress || pkg?.senderAddress || "" // cuối cùng
+  );
+}
+
+// Lấy địa chỉ người nhận từ nhiều field có thể có
+function getReceiverAddressFromPackage(pkg) {
+  if (pkg?.receiverInfo) {
+    const parsed = parseContactString(pkg.receiverInfo);
+    if (parsed.address) return parsed.address;
+  }
+  if (pkg?._receiver?.address) return pkg._receiver.address;
+  if (pkg?._raw?.receiverInfo) {
+    const parsed = parseContactString(pkg._raw.receiverInfo);
+    if (parsed.address) return parsed.address;
+  }
+  return (
+    pkg?.destination ||
+    pkg?.toAddress ||
+    pkg?.receiverAddress ||
+    pkg?.address || // đôi khi normalize đặt tên ngắn
+    ""
+  );
+}
+
+// Bỏ dấu tiếng Việt (accent folding)
+function foldAccents(str) {
+  if (!str) return "";
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D");
+}
+
+// Chuẩn hoá địa chỉ Việt Nam, thêm ", Việt Nam" nếu thiếu + chuẩn hoá quận/huyện
+function normalizeVietnamAddress(addr) {
+  if (!addr) return "";
+  let a = String(addr).replace(/\s+/g, " ").trim();
+  // Thay 1 số từ/cụm thường gặp
+  a = a
+    .replace(/\bTP\.\s*/gi, "Thành phố ")
+    .replace(/\bQ\.\s*/gi, "Quận ")
+    .replace(/\bP\.\s*/gi, "Phường ")
+    .replace(/\bĐường\b/gi, "Đường");
+  // Thêm quốc gia nếu thiếu
+  const hasVN =
+    /vi(?:e|ê)t\s*nam/i.test(a) ||
+    /ha noi|hà nội|ho chi minh|hồ chí minh|hcm/i.test(foldAccents(a));
+  if (!hasVN) a = a + ", Việt Nam";
+  return a;
+}
+
+// Sleep nhỏ cho retry
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Kiểm tra lat/lon hợp lệ và không phải (0,0)
+function isValidPoint(obj) {
+  if (!obj) return false;
+  const { lat, lon } = obj;
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lon) &&
+    Math.abs(lat) > 1 &&
+    Math.abs(lon) > 1
+  );
+}
+
+// Geocode qua Nominatim với nhiều chiến lược
+async function geocodeAddress(addr) {
+  const raw = addr || "";
+  const q = normalizeVietnamAddress(raw);
+  const qFold = foldAccents(q);
+
+  const tries = [
+    // 1) VN bias
+    {
+      name: "vn-bias",
+      url:
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&countrycodes=vn&accept-language=vi&q=" +
+        encodeURIComponent(q),
+    },
+    // 2) Không giới hạn quốc gia
+    {
+      name: "global",
+      url:
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&accept-language=vi&q=" +
+        encodeURIComponent(q),
+    },
+    // 3) Accent folding
+    {
+      name: "folded",
+      url:
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&accept-language=vi&q=" +
+        encodeURIComponent(qFold),
+    },
+  ];
+
+  // 4) Structured: tách 'đường, quận, thành phố'
+  const parts = raw.split(",").map((s) => s.trim());
+  if (parts.length >= 2) {
+    const street = parts[0];
+    const city = parts.slice(1).join(", ");
+    const streetQ = normalizeVietnamAddress(street);
+    const cityQ = normalizeVietnamAddress(city);
+    tries.push({
+      name: "structured",
+      url:
+        "https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&accept-language=vi&street=" +
+        encodeURIComponent(streetQ) +
+        "&city=" +
+        encodeURIComponent(cityQ),
+    });
+  }
+
+  for (let i = 0; i < tries.length; i++) {
+    const t = tries[i];
+    try {
+      const res = await fetch(t.url, {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) {
+        console.warn("[Geocode][" + t.name + "] http", res.status);
+      } else {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const p = {
+            lat: parseFloat(data[0].lat),
+            lon: parseFloat(data[0].lon),
+          };
+          console.log("[Geocode][" + t.name + "]", data[0].display_name, p);
+          return {
+            point: p,
+            meta: { name: t.name, display: data[0].display_name },
+          };
+        }
+      }
+    } catch (e) {
+      console.warn("[Geocode][" + t.name + "] exception", e);
+    }
+    await wait(250); // backoff nhẹ giữa các lần thử
+  }
+  return { point: null, meta: { reason: "no-match", q, qFold } };
+}
+
+// Gọi OSRM để lấy route polyline theo thứ tự (shipper -> sender -> receiver)
+async function fetchOsrmRoute(points /* [{lat, lon}, ...] */) {
+  const coords = points.map((p) => `${p.lon},${p.lat}`).join(";");
+  const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("OSRM request failed");
+  const json = await res.json();
+  if (json?.routes?.length) {
+    // Leaflet expects [lat,lng]
+    return json.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+  }
+  return null;
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [tasks, setTasks] = useState({ assigned: [], unassigned: [] });
@@ -191,6 +384,11 @@ export default function AdminDashboard() {
   });
   const debounceRef = useRef(null);
 
+  // ==== State hiển thị route preview ====
+  const [routeLine, setRouteLine] = useState(null); // [[lat,lng], ...]
+  const [routeStops, setRouteStops] = useState(null); // { shipper, sender, receiver }
+  const [previewPkgId, setPreviewPkgId] = useState("");
+
   useEffect(() => {
     (async () => {
       try {
@@ -214,11 +412,11 @@ export default function AdminDashboard() {
         // Tải danh sách shipper
         try {
           const resSh = await fetch(`${API_BASE}/api/v1/admin/shippers`, {
+            method: "GET",
             headers: {
               "Content-Type": "application/json",
               ...getAuthHeaders(),
             },
-            headers: { ...getAuthHeaders() },
           });
           if (resSh.ok) {
             const dataSh = await resSh.json();
@@ -299,7 +497,6 @@ export default function AdminDashboard() {
   async function createShipper() {
     try {
       const res = await fetch(`${API_BASE}/api/v1/admin/shippers`, {
-        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         body: JSON.stringify(newShipper),
@@ -327,7 +524,6 @@ export default function AdminDashboard() {
   async function createPackage() {
     try {
       const res = await fetch(`${API_BASE}/api/v1/admin/packages`, {
-        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         body: JSON.stringify(newPackage),
@@ -410,6 +606,92 @@ export default function AdminDashboard() {
     } catch (e) {
       console.error(e);
       alert("Không thể tối ưu/tạo chuyến cho shipper đã chọn");
+    }
+  }
+
+  // ==== Build route cho 1 package + 1 shipper ====
+  async function buildRouteFor(pkgId, shipperId) {
+    try {
+      const pkg = allPackages.find((p) => p.id === Number(pkgId));
+      const shipper = shippers.find((s) => s.id === Number(shipperId));
+      if (!pkg || !shipper) {
+        alert("Thiếu package hoặc shipper");
+        return;
+      }
+
+      console.log("[Route] package:", pkg);
+      console.log("[Route] shipper:", shipper);
+
+      // 1) Toạ độ shipper có sẵn
+      const shipperPoint = {
+        lat: Number(shipper.currentLatitude),
+        lon: Number(shipper.currentLongitude),
+      };
+
+      // 2) Lấy địa chỉ người gửi / người nhận từ nhiều nguồn
+      const senderAddress = getSenderAddressFromPackage(pkg);
+      const receiverAddress = getReceiverAddressFromPackage(pkg);
+      console.log("[Geocode] using sender address:", senderAddress);
+      console.log("[Geocode] using receiver address:", receiverAddress);
+
+      // 3) Tìm lat/lng người gửi (geocode từ địa chỉ) — multi-try
+      const { point: senderPoint, meta: senderMeta } = await geocodeAddress(
+        senderAddress || ""
+      );
+
+      // 4) Tìm lat/lng người nhận
+      let receiverPoint = null;
+      if (
+        typeof pkg.latitude === "number" &&
+        typeof pkg.longitude === "number" &&
+        Math.abs(pkg.latitude) > 1 &&
+        Math.abs(pkg.longitude) > 1
+      ) {
+        receiverPoint = { lat: pkg.latitude, lon: pkg.longitude };
+      } else {
+        const { point, meta } = await geocodeAddress(receiverAddress || "");
+        receiverPoint = point;
+        if (!point) console.warn("[Geocode] receiver meta:", meta);
+      }
+
+      if (!isValidPoint(senderPoint) || !isValidPoint(receiverPoint)) {
+        console.warn("[Geocode] sender meta:", senderMeta);
+        console.warn("[Geocode] sender address:", senderAddress);
+        console.warn("[Geocode] receiver parsed:", receiverAddress);
+        alert(
+          "Không geocode được địa chỉ người gửi hoặc người nhận.\n" +
+            "Sender: " +
+            (senderAddress || "(rỗng)") +
+            "\n" +
+            "Receiver: " +
+            (receiverAddress || "(rỗng)") +
+            "\n" +
+            "Ví dụ hợp lệ: '456 Đường Láng, Đống Đa, Hà Nội, Việt Nam'."
+        );
+        return;
+      }
+
+      // 5) Gọi OSRM theo thứ tự shipper -> sender -> receiver
+      const line = await fetchOsrmRoute([
+        shipperPoint,
+        senderPoint,
+        receiverPoint,
+      ]);
+      setRouteLine(line);
+      setRouteStops({
+        shipper: shipperPoint,
+        sender: senderPoint,
+        receiver: receiverPoint,
+      });
+
+      // Zoom map vào giữa tuyến
+      if (line && line.length) {
+        const mid = line[Math.floor(line.length / 2)];
+        setSearchCenter(mid);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Không thể tạo lộ trình");
     }
   }
 
@@ -500,6 +782,25 @@ export default function AdminDashboard() {
                   </option>
                 ))}
               </select>
+
+              {/* Preview Route controls */}
+              <input
+                className="ad-input"
+                style={{ marginLeft: 8, width: 120 }}
+                placeholder="Package ID"
+                value={previewPkgId}
+                onChange={(e) => setPreviewPkgId(e.target.value)}
+                type="number"
+              />
+              <button
+                className="ad-btn"
+                disabled={!selectedShipperId || !previewPkgId}
+                onClick={() => buildRouteFor(previewPkgId, selectedShipperId)}
+                title="Vẽ lộ trình: Shipper → Người gửi → Người nhận"
+                style={{ marginLeft: 6 }}
+              >
+                Preview Route
+              </button>
             </div>
           </div>
 
@@ -511,7 +812,7 @@ export default function AdminDashboard() {
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="ad-search-input"
                   type="search"
-                  placeholder="Tìm địa điểm, địa chỉ… (VD: 1600 Amphitheatre, Quận 1)"
+                  placeholder="Tìm địa điểm, địa chỉ… (VD: 456 Đường Láng, Đống Đa, Hà Nội)"
                   aria-label="Tìm kiếm địa điểm"
                 />
                 {isLoadingSearch && (
@@ -548,59 +849,81 @@ export default function AdminDashboard() {
                 />
 
                 {points.map((p) => {
-                  const isAssigned =
-                    p.status === "ASSIGNED" || p.status === "IN_TRANSIT";
+                  const isAssigned = p.status === "ASSIGNED" || p.status === "IN_TRANSIT";
                   const color = isAssigned ? "#3b82f6" : "#f59e0b";
                   return (
-                    <CircleMarker
-                      key={p.id}
-                      center={[p.latitude, p.longitude]}
-                      radius={8}
-                      pathOptions={{
-                        color,
-                        fillColor: color,
-                        fillOpacity: 0.9,
-                      }}
-                    >
-                      <Popup>
-                        <div style={{ fontSize: 13, minWidth: 180 }}>
-                          <div>
-                            <b>#{p.id}</b> — {p.status}
-                          </div>
-                          <div>
-                            {p.receiverName || p.description || "Package"}
-                          </div>
-                          {p.address && <div>{p.address}</div>}
-                          {p.cod != null && (
+                    <React.Fragment key={p.id}>
+                      <CircleMarker
+                        center={[p.latitude, p.longitude]}
+                        radius={8}
+                        pathOptions={{
+                          color,
+                          fillColor: color,
+                          fillOpacity: 0.9,
+                        }}
+                      >
+                        <Popup>
+                          <div style={{ fontSize: 13, minWidth: 180 }}>
                             <div>
-                              COD: <b>{p.cod}</b>
+                              <b>#{p.id}</b> — {p.status}
                             </div>
-                          )}
-                        </div>
-                      </Popup>
-                    </CircleMarker>
+                            <div>
+                              {p.receiverName || p.description || "Package"}
+                            </div>
+                            {p.address && <div>{p.address}</div>}
+                            {p.cod != null && (
+                              <div>
+                                COD: <b>{p.cod}</b>
+                              </div>
+                            )}
+                          </div>
+                        </Popup>
+                      </CircleMarker>
+                      <CircleMarker
+                        center={[p.latitude, p.longitude]}
+                        radius={2}
+                        pathOptions={{ color: '#FFFFFF', fillColor: '#FFFFFF', fillOpacity: 1 }}
+                      />
+                    </React.Fragment>
                   );
                 })}
 
-                {searchPoint && (
-                  <CircleMarker
-                    center={[searchPoint.lat, searchPoint.lon]}
-                    radius={9}
-                    pathOptions={{
-                      color: "#22c55e",
-                      fillColor: "#22c55e",
-                      fillOpacity: 0.95,
-                    }}
+                {/* ==== Route preview: Polyline + 3 markers ==== */}
+                {routeLine && (
+                  <Polyline
+                    positions={routeLine}
+                    pathOptions={{ weight: 5, opacity: 0.9 }}
+                  />
+                )}
+                {routeStops?.shipper && (
+                  <Marker
+                    position={[routeStops.shipper.lat, routeStops.shipper.lon]}
                   >
-                    <Popup>
-                      <div style={{ fontSize: 13, minWidth: 180 }}>
-                        <b>Địa điểm đã chọn</b>
-                        <div>{searchPoint.display}</div>
-                        <div>Lat: {searchPoint.lat.toFixed(6)}</div>
-                        <div>Lng: {searchPoint.lon.toFixed(6)}</div>
-                      </div>
-                    </Popup>
-                  </CircleMarker>
+                    <Tooltip direction="top" offset={[0, -10]} permanent>
+                      Shipper (Start)
+                    </Tooltip>
+                  </Marker>
+                )}
+                {routeStops?.sender && (
+                  <Marker
+                    position={[routeStops.sender.lat, routeStops.sender.lon]}
+                  >
+                    <Tooltip direction="top" offset={[0, -10]} permanent>
+                      Sender (Stop 1)
+                    </Tooltip>
+                  </Marker>
+                )}
+                {routeStops?.receiver && (
+                  <Marker
+                    position={[
+                      routeStops.receiver.lat,
+                      routeStops.receiver.lon,
+                    ]}
+                  >
+                    <Tooltip direction="top" offset={[0, -10]} permanent>
+                      Receiver (Stop 2)
+                    </Tooltip>
+                  </Marker>
                 )}
               </MapContainer>
             </section>

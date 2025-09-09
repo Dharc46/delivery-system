@@ -23,8 +23,38 @@ body, html {
 
 .main-content {
   padding: 2rem;
+  min-height: calc(100vh - 72px); /* Khớp với chiều cao header */
+  position: relative;
+}
+
+/* CSS cho màn hình loading */
+.loading-screen {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  min-height: calc(100vh - 60px); /* Trừ chiều cao của header */
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f5f5f5; /* Nền xám nhạt */
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

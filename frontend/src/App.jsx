@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoginPage from './pages/LoginPage';
@@ -37,28 +37,13 @@ const pageTransition = {
   duration: 0.5
 };
 
-// Define the animation variants for the new zoom effect
-const zoomVariants = {
-  initial: {
-    scale: 0,
-    opacity: 0
-  },
-  in: {
-    scale: 1,
-    opacity: 1
-  },
-  out: {
-    scale: 0,
-    opacity: 0
-  }
-};
-
-// Define the transition properties for the new zoom effect
-const zoomTransition = {
-  type: "tween",
-  ease: "easeIn",
-  duration: 0.4
-};
+// Component màn hình loading
+const LoadingScreen = () => (
+  <div className="loading-screen">
+    <div className="spinner"></div>
+    <p className="loading-text">Đang tải...</p>
+  </div>
+);
 
 function App() {
   return (
@@ -71,15 +56,16 @@ function App() {
 // Tạo một component wrapper riêng để sử dụng hook useLocation
 function RouterWrapper() {
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Cuộn lên đầu trang khi thay đổi route
+  // Cuộn lên đầu trang và kích hoạt loading khi thay đổi route
   useEffect(() => {
+    setIsLoading(true);
     const scrollToTop = () => {
       window.scrollTo({ top: 0, behavior: 'instant' });
     };
     scrollToTop();
-    // Thêm setTimeout để đảm bảo cuộn sau khi render hoàn tất
-    const timer = setTimeout(scrollToTop, 0);
+    const timer = setTimeout(() => setIsLoading(false), 500); // Thời gian loading: 500ms
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
@@ -88,96 +74,95 @@ function RouterWrapper() {
       <Header />
       <div className="main-content">
         <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            {/* Giữ lại hiệu ứng trượt sang hai bên cho Login và Register */}
-            <Route 
-              path="/login" 
-              element={
-                <motion.div
-                  key="login-page"
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                >
-                  <LoginPage />
-                </motion.div>
-              } 
-            />
-            <Route 
-              path="/register" 
-              element={
-                <motion.div
-                  key="register-page"
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                >
-                  <RegisterPage />
-                </motion.div>
-              } 
-            />
-            
-            {/* Áp dụng hiệu ứng thu phóng (zoom) cho Private Routes */}
-            <Route 
-              path="/admin" 
-              element={
-                <PrivateRoute roles={['ROLE_ADMIN']}>
+          {isLoading ? (
+            <LoadingScreen key="loading" />
+          ) : (
+            <Routes location={location} key={location.pathname}>
+              {/* Giữ lại hiệu ứng trượt sang hai bên cho Login và Register */}
+              <Route 
+                path="/login" 
+                element={
                   <motion.div
-                    key="admin-dashboard"
+                    key="login-page"
                     initial="initial"
                     animate="in"
                     exit="out"
-                    variants={zoomVariants}
-                    transition={zoomTransition}
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    layout
                   >
+                    <LoginPage />
+                  </motion.div>
+                } 
+              />
+              <Route 
+                path="/register" 
+                element={
+                  <motion.div
+                    key="register-page"
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    layout
+                  >
+                    <RegisterPage />
+                  </motion.div>
+                } 
+              />
+              
+              {/* Không sử dụng hiệu ứng cho Admin Dashboard */}
+              <Route 
+                path="/admin" 
+                element={
+                  <PrivateRoute roles={['ROLE_ADMIN']}>
                     <AdminDashboard />
-                  </motion.div>
-                </PrivateRoute>
-              } 
-            />
-            <Route 
-              path="/shipper" 
-              element={
-                <PrivateRoute roles={['ROLE_SHIPPER']}>
+                  </PrivateRoute>
+                } 
+              />
+              <Route 
+                path="/shipper" 
+                element={
+                  <PrivateRoute roles={['ROLE_SHIPPER']}>
+                    <motion.div
+                      key="shipper-dashboard"
+                      initial="initial"
+                      animate="in"
+                      exit="out"
+                      variants={pageVariants}
+                      transition={pageTransition}
+                      layout
+                    >
+                      <ShipperDashboard />
+                    </motion.div>
+                  </PrivateRoute>
+                } 
+              />
+              <Route
+                path="/"
+                element={
                   <motion.div
-                    key="shipper-dashboard"
+                    key="home-page"
                     initial="initial"
                     animate="in"
                     exit="out"
-                    variants={zoomVariants}
-                    transition={zoomTransition}
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    layout
                   >
-                    <ShipperDashboard />
+                    <HomePage />
                   </motion.div>
-                </PrivateRoute>
-              } 
-            />
-            <Route
-              path="/"
-              element={
-                <motion.div
-                  key="home-page"
-                  initial="initial"
-                  animate="in"
-                  exit="out"
-                  variants={pageVariants}
-                  transition={pageTransition}
-                >
-                  <HomePage />
-                </motion.div>
-              }
-            />
-            {/* Các route không có hiệu ứng chuyển cảnh */}
-            <Route path="/track" element={<CustomerTracking />} />
-            <Route path="/track/:id" element={<CustomerTracking />} />
-            <Route path="/features/route-optimization" element={<div>Tối ưu hóa tuyến đường - Đang phát triển</div>} />
-            <Route path="/features/real-time-tracking" element={<div>Theo dõi thời gian thực - Đang phát triển</div>} />
-            <Route path="/features/reporting" element={<div>Báo cáo thông minh - Đang phát triển</div>} />
-          </Routes>
+                }
+              />
+              {/* Các route không có hiệu ứng chuyển cảnh */}
+              <Route path="/track" element={<CustomerTracking />} />
+              <Route path="/track/:id" element={<CustomerTracking />} />
+              <Route path="/features/route-optimization" element={<div>Tối ưu hóa tuyến đường - Đang phát triển</div>} />
+              <Route path="/features/real-time-tracking" element={<div>Theo dõi thời gian thực - Đang phát triển</div>} />
+              <Route path="/features/reporting" element={<div>Báo cáo thông minh - Đang phát triển</div>} />
+            </Routes>
+          )}
         </AnimatePresence>
       </div>
     </div>

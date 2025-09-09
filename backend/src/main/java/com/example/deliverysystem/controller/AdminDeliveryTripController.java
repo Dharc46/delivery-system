@@ -13,13 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
+@Tag(name = "Admin Delivery Trips", description = "Optimize routes and manage delivery trips")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/admin/delivery-trips")
 @RequiredArgsConstructor
-@Tag(name = "Admin - Delivery Trip Management", description = "API for Admin to optimize and manage delivery trips")
-@SecurityRequirement(name = "bearerAuth")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminDeliveryTripController {
 
@@ -27,16 +27,17 @@ public class AdminDeliveryTripController {
 
     @Operation(summary = "Optimize and create a new delivery trip")
     @PostMapping("/optimize")
-    public ResponseEntity<DeliveryTripDTO> optimizeAndCreateDeliveryTrip(@RequestBody OptimizeTripRequest request) {
-        DeliveryTripDTO createdTrip = deliveryTripService.optimizeAndCreateDeliveryTrip(request.getShipperId(), request.getPackageIds());
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTrip);
+    public ResponseEntity<DeliveryTripDTO> optimize(@RequestBody OptimizeTripRequest request) {
+        DeliveryTripDTO dto = deliveryTripService.optimizeAndCreateTrip(request.getShipperId(), request.getPackageIds());
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get all delivery trips")
-    @GetMapping
-    public ResponseEntity<List<DeliveryTripDTO>> getAllDeliveryTrips() {
-        List<DeliveryTripDTO> trips = deliveryTripService.getAllDeliveryTrips();
-        return ResponseEntity.ok(trips);
+    @Operation(summary = "Get active delivery trip for a shipper (today)")
+    @GetMapping("/active")
+    public ResponseEntity<DeliveryTripDTO> getActiveForShipper(@RequestParam Long shipperId) {
+        Optional<DeliveryTripDTO> trip = deliveryTripService.findActiveTripForToday(shipperId);
+        return trip.map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @Operation(summary = "Get delivery trip by ID")
