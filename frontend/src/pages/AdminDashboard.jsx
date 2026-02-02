@@ -172,42 +172,60 @@ function parseContactString(raw) {
 
 // Lấy địa chỉ người gửi từ nhiều field có thể có
 function getSenderAddressFromPackage(pkg) {
-  // 1) Ưu tiên senderInfo dạng "Tên - SĐT - Địa chỉ"
+  // senderInfo được tạo từ: "latitude, longitude"
+  // Vì vậy ta sẽ lấy từ shipper hoặc các trường khác
+  // Hoặc nếu là dạng contact string thì parse
   if (pkg?.senderInfo) {
+    // Nếu là dạng "lat, lon" thì bỏ qua
+    if (
+      pkg.senderInfo.includes(",") &&
+      !isNaN(parseFloat(pkg.senderInfo.split(",")[0]))
+    ) {
+      return ""; // Trả về rỗng, vì senderInfo chỉ có tọa độ
+    }
+    // Nếu là dạng "Tên - SĐT - Địa chỉ" thì parse
     const parsed = parseContactString(pkg.senderInfo);
     if (parsed.address) return parsed.address;
   }
-  // 2) Dạng đã normalize sang object
+  // Ưu tiên lấy từ các trường khác nếu có
   if (pkg?._sender?.address) return pkg._sender.address;
-  // 3) Raw gốc
   if (pkg?._raw?.senderInfo) {
     const parsed = parseContactString(pkg._raw.senderInfo);
     if (parsed.address) return parsed.address;
   }
-  // 4) Alias khác
-  return (
-    pkg?.originAddress || pkg?.fromAddress || pkg?.senderAddress || "" // cuối cùng
-  );
+  // Alias khác
+  return pkg?.originAddress || pkg?.fromAddress || pkg?.senderAddress || "";
 }
 
 // Lấy địa chỉ người nhận từ nhiều field có thể có
 function getReceiverAddressFromPackage(pkg) {
+  // Thứ tự ưu tiên:
+  // 1. address field (đây là field chính từ form)
+  // 2. receiverInfo (nếu không phải dạng "lat, lon")
+  // 3. destination (từ normalized data)
+
+  // Lấy từ address field trước (field chính từ API)
+  if (pkg?.address) {
+    return pkg.address;
+  }
+
+  // Kiểm tra receiverInfo
   if (pkg?.receiverInfo) {
-    const parsed = parseContactString(pkg.receiverInfo);
-    if (parsed.address) return parsed.address;
+    // Nếu không phải dạng "lat, lon" thì dùng
+    if (
+      !pkg.receiverInfo.includes(",") ||
+      isNaN(parseFloat(pkg.receiverInfo.split(",")[0]))
+    ) {
+      return pkg.receiverInfo;
+    }
   }
-  if (pkg?._receiver?.address) return pkg._receiver.address;
-  if (pkg?._raw?.receiverInfo) {
-    const parsed = parseContactString(pkg._raw.receiverInfo);
-    if (parsed.address) return parsed.address;
+
+  // Fallback: từ destination (normalized)
+  if (pkg?.destination) {
+    return pkg.destination;
   }
-  return (
-    pkg?.destination ||
-    pkg?.toAddress ||
-    pkg?.receiverAddress ||
-    pkg?.address || // đôi khi normalize đặt tên ngắn
-    ""
-  );
+
+  return "";
 }
 
 // Bỏ dấu tiếng Việt (accent folding)
@@ -376,11 +394,10 @@ export default function AdminDashboard() {
     password: "",
   });
   const [newPackage, setNewPackage] = useState({
-    senderInfo: "",
-    receiverInfo: "",
-    address: "",
-    latitude: 0,
-    longitude: 0,
+    senderAddress: "",
+    receiverName: "",
+    receiverPhone: "",
+    receiverAddress: "",
     codAmount: 0,
   });
   const debounceRef = useRef(null);
@@ -524,10 +541,20 @@ export default function AdminDashboard() {
 
   async function createPackage() {
     try {
+      // Tự động tạo senderInfo và receiverInfo từ các trường
+      const packageData = {
+        senderInfo: newPackage.senderAddress,
+        receiverInfo: `${newPackage.receiverName} - ${newPackage.receiverPhone} - ${newPackage.receiverAddress}`,
+        address: newPackage.receiverAddress, // Lưu receiver address vào field address
+        latitude: 0, // Sẽ được geocode từ address nếu cần
+        longitude: 0,
+        codAmount: newPackage.codAmount,
+      };
+
       const res = await fetch(`${API_BASE}/api/v1/admin/packages`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...getAuthHeaders() },
-        body: JSON.stringify(newPackage),
+        body: JSON.stringify(packageData),
       });
       if (!res.ok) throw new Error("Tạo package thất bại");
       const pkg = await res.json();
@@ -539,11 +566,10 @@ export default function AdminDashboard() {
       }));
       setShowAddPackage(false);
       setNewPackage({
-        senderInfo: "",
-        receiverInfo: "",
-        address: "",
-        latitude: 0,
-        longitude: 0,
+        senderAddress: "",
+        receiverName: "",
+        receiverPhone: "",
+        receiverAddress: "",
         codAmount: 0,
       });
       alert("Đã tạo package thành công");
@@ -630,18 +656,11 @@ export default function AdminDashboard() {
         lon: Number(shipper.currentLongitude),
       };
 
-      // 2) Lấy địa chỉ người gửi / người nhận từ nhiều nguồn
-      const senderAddress = getSenderAddressFromPackage(pkg);
+      // 2) Lấy địa chỉ người nhận
       const receiverAddress = getReceiverAddressFromPackage(pkg);
-      console.log("[Geocode] using sender address:", senderAddress);
       console.log("[Geocode] using receiver address:", receiverAddress);
 
-      // 3) Tìm lat/lng người gửi (geocode từ địa chỉ) — multi-try
-      const { point: senderPoint, meta: senderMeta } = await geocodeAddress(
-        senderAddress || "",
-      );
-
-      // 4) Tìm lat/lng người nhận
+      // 3) Tìm lat/lng người nhận
       let receiverPoint = null;
       if (
         typeof pkg.latitude === "number" &&
@@ -656,15 +675,10 @@ export default function AdminDashboard() {
         if (!point) console.warn("[Geocode] receiver meta:", meta);
       }
 
-      if (!isValidPoint(senderPoint) || !isValidPoint(receiverPoint)) {
-        console.warn("[Geocode] sender meta:", senderMeta);
-        console.warn("[Geocode] sender address:", senderAddress);
-        console.warn("[Geocode] receiver parsed:", receiverAddress);
+      if (!isValidPoint(receiverPoint)) {
+        console.warn("[Geocode] receiver address:", receiverAddress);
         alert(
-          "Không geocode được địa chỉ người gửi hoặc người nhận.\n" +
-            "Sender: " +
-            (senderAddress || "(rỗng)") +
-            "\n" +
+          "Không geocode được địa chỉ người nhận.\n" +
             "Receiver: " +
             (receiverAddress || "(rỗng)") +
             "\n" +
@@ -673,16 +687,11 @@ export default function AdminDashboard() {
         return;
       }
 
-      // 5) Gọi OSRM theo thứ tự shipper -> sender -> receiver
-      const line = await fetchOsrmRoute([
-        shipperPoint,
-        senderPoint,
-        receiverPoint,
-      ]);
+      // 4) Gọi OSRM theo thứ tự shipper -> receiver (không cần sender vì shipper là điểm xuất phát)
+      const line = await fetchOsrmRoute([shipperPoint, receiverPoint]);
       setRouteLine(line);
       setRouteStops({
         shipper: shipperPoint,
-        sender: senderPoint,
         receiver: receiverPoint,
       });
 
@@ -1068,59 +1077,51 @@ export default function AdminDashboard() {
                   </button>
                 </div>
                 <div className="ad-form">
-                  <label>Sender Info *</label>
+                  <label>Sender Address *</label>
                   <input
                     className="ad-input"
-                    placeholder="Thông tin người gửi"
-                    value={newPackage.senderInfo}
+                    placeholder="Địa chỉ người gửi"
+                    value={newPackage.senderAddress}
                     onChange={(e) =>
                       setNewPackage({
                         ...newPackage,
-                        senderInfo: e.target.value,
+                        senderAddress: e.target.value,
                       })
                     }
                   />
-                  <label>Receiver Info *</label>
+                  <label>Receiver Name *</label>
                   <input
                     className="ad-input"
-                    placeholder="Thông tin người nhận"
-                    value={newPackage.receiverInfo}
+                    placeholder="Tên người nhận"
+                    value={newPackage.receiverName}
                     onChange={(e) =>
                       setNewPackage({
                         ...newPackage,
-                        receiverInfo: e.target.value,
+                        receiverName: e.target.value,
                       })
                     }
                   />
-                  <label>Address</label>
+                  <label>Receiver Phone *</label>
                   <input
                     className="ad-input"
-                    value={newPackage.address}
-                    onChange={(e) =>
-                      setNewPackage({ ...newPackage, address: e.target.value })
-                    }
-                  />
-                  <label>Latitude</label>
-                  <input
-                    className="ad-input"
-                    type="number"
-                    value={newPackage.latitude}
+                    placeholder="Số điện thoại người nhận"
+                    value={newPackage.receiverPhone}
                     onChange={(e) =>
                       setNewPackage({
                         ...newPackage,
-                        latitude: Number(e.target.value),
+                        receiverPhone: e.target.value,
                       })
                     }
                   />
-                  <label>Longitude</label>
+                  <label>Receiver Address *</label>
                   <input
                     className="ad-input"
-                    type="number"
-                    value={newPackage.longitude}
+                    placeholder="Địa chỉ người nhận"
+                    value={newPackage.receiverAddress}
                     onChange={(e) =>
                       setNewPackage({
                         ...newPackage,
-                        longitude: Number(e.target.value),
+                        receiverAddress: e.target.value,
                       })
                     }
                   />

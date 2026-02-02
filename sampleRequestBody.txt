@@ -38,30 +38,34 @@ For shipper:
 
 For Package:
 {
-  "receiver": "Nguyễn Thị Mai",
-  "address": "123 Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM",
-  "latitude": 10.7722,
-  "longitude": 106.6983,
-  "cod": 250000
+  "senderAddress": "456 Đường Láng, Đống Đa, Hà Nội, Việt Nam",
+  "receiverName": "Nguyễn Thị Mai",
+  "receiverPhone": "0912345678",
+  "receiverAddress": "123 Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM",
+  "codAmount": 250000
 }
 {
-  "receiver": "Trần Quốc Bảo",
-  "address": "45 Nguyễn Văn Cừ, Quận 5, TP.HCM",
-  "latitude": 10.7541,
-  "longitude": 106.6754,
-  "cod": 0
+  "senderAddress": "789 Trần Hưng Đạo, Quận 1, TP.HCM",
+  "receiverName": "Trần Quốc Bảo",
+  "receiverPhone": "0934567890",
+  "receiverAddress": "45 Nguyễn Văn Cừ, Quận 5, TP.HCM",
+  "codAmount": 0
 }
 {
-  "receiver": "Test Receiver 01",
-  "address": "Test Address",
-  "latitude": 0,
-  "longitude": 0,
-  "cod": 100000
+  "senderAddress": "Test Sender Address",
+  "receiverName": "Test Receiver 01",
+  "receiverPhone": "0900000000",
+  "receiverAddress": "Test Receiver Address",
+  "codAmount": 100000
 }
 {
-  "receiver": "Lê Hoàng Anh",
-  "address": "89 Phan Đình Phùng, Phú Nhuận, TP.HCM",
-  "latitude": 10.7993,
-  "longitude": 106.6822,
-  "cod": 520000
+  "senderAddress": "321 Lý Tự Trọng, Quận 1, TP.HCM",
+  "receiverName": "Lê Hoàng Anh",
+  "receiverPhone": "0987654321",
+  "receiverAddress": "89 Phan Đình Phùng, Phú Nhuận, TP.HCM",
+  "codAmount": 520000
 }
+
+Note: 
+- senderInfo sẽ được tự động tạo từ: senderAddress
+- receiverInfo sẽ được tự động tạo từ: "receiverName - receiverPhone - receiverAddress"
