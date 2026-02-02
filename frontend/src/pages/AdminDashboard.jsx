@@ -138,7 +138,7 @@ function TasksTable({ rows, onAssignRequested }) {
                 <td>
                   <span
                     className={`ad-badge ad-badge-${String(
-                      p.status || ""
+                      p.status || "",
                     ).toLowerCase()}`}
                   >
                     {safe(p.status)}
@@ -376,11 +376,12 @@ export default function AdminDashboard() {
     password: "",
   });
   const [newPackage, setNewPackage] = useState({
-    receiverName: "",
+    senderInfo: "",
+    receiverInfo: "",
     address: "",
     latitude: 0,
     longitude: 0,
-    cod: 0,
+    codAmount: 0,
   });
   const debounceRef = useRef(null);
 
@@ -402,10 +403,10 @@ export default function AdminDashboard() {
         const pkgs = raw.map(normalizePackage);
         setTasks({
           unassigned: pkgs.filter(
-            (x) => x.status === "PENDING" || !x.deliveryTripId
+            (x) => x.status === "PENDING" || !x.deliveryTripId,
           ),
           assigned: pkgs.filter(
-            (x) => x.deliveryTripId && x.status !== "DELIVERED"
+            (x) => x.deliveryTripId && x.status !== "DELIVERED",
           ),
         });
         setAllPackages?.(pkgs);
@@ -423,8 +424,8 @@ export default function AdminDashboard() {
             const arr = Array.isArray(dataSh)
               ? dataSh
               : Array.isArray(dataSh?.data)
-              ? dataSh.data
-              : [];
+                ? dataSh.data
+                : [];
             setShippers(arr);
           }
         } catch (e) {
@@ -444,7 +445,7 @@ export default function AdminDashboard() {
         typeof p.latitude === "number" &&
         !Number.isNaN(p.latitude) &&
         typeof p.longitude === "number" &&
-        !Number.isNaN(p.longitude)
+        !Number.isNaN(p.longitude),
     );
   }, [tasks]);
 
@@ -464,7 +465,7 @@ export default function AdminDashboard() {
       try {
         setIsLoadingSearch(true);
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          val.trim()
+          val.trim(),
         )}&addressdetails=1&limit=5`;
         const res = await fetch(url, {
           headers: { Accept: "application/json" },
@@ -538,11 +539,12 @@ export default function AdminDashboard() {
       }));
       setShowAddPackage(false);
       setNewPackage({
-        receiverName: "",
+        senderInfo: "",
+        receiverInfo: "",
         address: "",
         latitude: 0,
         longitude: 0,
-        cod: 0,
+        codAmount: 0,
       });
       alert("Đã tạo package thành công");
     } catch (e) {
@@ -567,7 +569,7 @@ export default function AdminDashboard() {
             shipperId: Number(selectedShipperId),
             packageIds: [Number(pkgId)],
           }),
-        }
+        },
       );
       if (!res.ok) throw new Error("Optimize trip thất bại");
       const data = await res.json(); // giả định backend trả về trip +/hoặc danh sách package đã gán
@@ -600,8 +602,8 @@ export default function AdminDashboard() {
                 assignedTo: String(selectedShipperId),
                 deliveryTripId: data?.id || p.deliveryTripId,
               }
-            : p
-        )
+            : p,
+        ),
       );
     } catch (e) {
       console.error(e);
@@ -636,7 +638,7 @@ export default function AdminDashboard() {
 
       // 3) Tìm lat/lng người gửi (geocode từ địa chỉ) — multi-try
       const { point: senderPoint, meta: senderMeta } = await geocodeAddress(
-        senderAddress || ""
+        senderAddress || "",
       );
 
       // 4) Tìm lat/lng người nhận
@@ -666,7 +668,7 @@ export default function AdminDashboard() {
             "Receiver: " +
             (receiverAddress || "(rỗng)") +
             "\n" +
-            "Ví dụ hợp lệ: '456 Đường Láng, Đống Đa, Hà Nội, Việt Nam'."
+            "Ví dụ hợp lệ: '456 Đường Láng, Đống Đa, Hà Nội, Việt Nam'.",
         );
         return;
       }
@@ -771,7 +773,7 @@ export default function AdminDashboard() {
                 value={selectedShipperId ?? ""}
                 onChange={(e) =>
                   setSelectedShipperId(
-                    e.target.value ? Number(e.target.value) : null
+                    e.target.value ? Number(e.target.value) : null,
                   )
                 }
               >
@@ -849,7 +851,8 @@ export default function AdminDashboard() {
                 />
 
                 {points.map((p) => {
-                  const isAssigned = p.status === "ASSIGNED" || p.status === "IN_TRANSIT";
+                  const isAssigned =
+                    p.status === "ASSIGNED" || p.status === "IN_TRANSIT";
                   const color = isAssigned ? "#3b82f6" : "#f59e0b";
                   return (
                     <React.Fragment key={p.id}>
@@ -882,7 +885,11 @@ export default function AdminDashboard() {
                       <CircleMarker
                         center={[p.latitude, p.longitude]}
                         radius={2}
-                        pathOptions={{ color: '#FFFFFF', fillColor: '#FFFFFF', fillOpacity: 1 }}
+                        pathOptions={{
+                          color: "#FFFFFF",
+                          fillColor: "#FFFFFF",
+                          fillOpacity: 1,
+                        }}
                       />
                     </React.Fragment>
                   );
@@ -1061,14 +1068,27 @@ export default function AdminDashboard() {
                   </button>
                 </div>
                 <div className="ad-form">
-                  <label>Receiver</label>
+                  <label>Sender Info *</label>
                   <input
                     className="ad-input"
-                    value={newPackage.receiverName}
+                    placeholder="Thông tin người gửi"
+                    value={newPackage.senderInfo}
                     onChange={(e) =>
                       setNewPackage({
                         ...newPackage,
-                        receiverName: e.target.value,
+                        senderInfo: e.target.value,
+                      })
+                    }
+                  />
+                  <label>Receiver Info *</label>
+                  <input
+                    className="ad-input"
+                    placeholder="Thông tin người nhận"
+                    value={newPackage.receiverInfo}
+                    onChange={(e) =>
+                      setNewPackage({
+                        ...newPackage,
+                        receiverInfo: e.target.value,
                       })
                     }
                   />
@@ -1104,15 +1124,16 @@ export default function AdminDashboard() {
                       })
                     }
                   />
-                  <label>COD</label>
+                  <label>COD Amount</label>
                   <input
                     className="ad-input"
                     type="number"
-                    value={newPackage.cod}
+                    placeholder="Số tiền thu hộ (VND)"
+                    value={newPackage.codAmount}
                     onChange={(e) =>
                       setNewPackage({
                         ...newPackage,
-                        cod: Number(e.target.value),
+                        codAmount: Number(e.target.value),
                       })
                     }
                   />
