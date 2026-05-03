@@ -398,7 +398,11 @@ export default function AdminDashboard() {
     receiverName: "",
     receiverPhone: "",
     receiverAddress: "",
+    packageDetails: "",
     codAmount: 0,
+    latitude: 0,
+    longitude: 0,
+    notes: "",
   });
   const debounceRef = useRef(null);
 
@@ -546,9 +550,11 @@ export default function AdminDashboard() {
         senderInfo: newPackage.senderAddress,
         receiverInfo: `${newPackage.receiverName} - ${newPackage.receiverPhone} - ${newPackage.receiverAddress}`,
         address: newPackage.receiverAddress, // Lưu receiver address vào field address
-        latitude: 0, // Sẽ được geocode từ address nếu cần
-        longitude: 0,
-        codAmount: newPackage.codAmount,
+        latitude: newPackage.latitude || 0,
+        longitude: newPackage.longitude || 0,
+        packageDetails: newPackage.packageDetails || "",
+        codAmount: newPackage.codAmount || 0,
+        notes: newPackage.notes || "",
       };
 
       const res = await fetch(`${API_BASE}/api/v1/admin/packages`, {
@@ -570,7 +576,11 @@ export default function AdminDashboard() {
         receiverName: "",
         receiverPhone: "",
         receiverAddress: "",
+        packageDetails: "",
         codAmount: 0,
+        latitude: 0,
+        longitude: 0,
+        notes: "",
       });
       alert("Đã tạo package thành công");
     } catch (e) {
@@ -1125,6 +1135,46 @@ export default function AdminDashboard() {
                       })
                     }
                   />
+                  <label>Package Details</label>
+                  <input
+                    className="ad-input"
+                    placeholder="Loại gói hàng (VD: Tài liệu, Thực phẩm, Điện tử...)"
+                    value={newPackage.packageDetails}
+                    onChange={(e) =>
+                      setNewPackage({
+                        ...newPackage,
+                        packageDetails: e.target.value,
+                      })
+                    }
+                  />
+                  <label>Latitude *</label>
+                  <input
+                    className="ad-input"
+                    type="number"
+                    step="0.0001"
+                    placeholder="10.7769"
+                    value={newPackage.latitude}
+                    onChange={(e) =>
+                      setNewPackage({
+                        ...newPackage,
+                        latitude: Number(e.target.value),
+                      })
+                    }
+                  />
+                  <label>Longitude *</label>
+                  <input
+                    className="ad-input"
+                    type="number"
+                    step="0.0001"
+                    placeholder="106.7009"
+                    value={newPackage.longitude}
+                    onChange={(e) =>
+                      setNewPackage({
+                        ...newPackage,
+                        longitude: Number(e.target.value),
+                      })
+                    }
+                  />
                   <label>COD Amount</label>
                   <input
                     className="ad-input"
@@ -1135,6 +1185,18 @@ export default function AdminDashboard() {
                       setNewPackage({
                         ...newPackage,
                         codAmount: Number(e.target.value),
+                      })
+                    }
+                  />
+                  <label>Notes</label>
+                  <input
+                    className="ad-input"
+                    placeholder="Ghi chú thêm (tùy chọn)"
+                    value={newPackage.notes}
+                    onChange={(e) =>
+                      setNewPackage({
+                        ...newPackage,
+                        notes: e.target.value,
                       })
                     }
                   />

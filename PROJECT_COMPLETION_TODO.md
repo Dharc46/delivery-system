@@ -18,9 +18,10 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 - [ ] Sua API dang ky frontend dang goi ham chua ton tai.
   - Hien tai: authApi moi co login, chua co register.
   - Anh huong: Khong dang ky duoc tai khoan tu UI.
-- [ ] Dong bo model du lieu trang quan ly package voi backend PackageDTO.
+- [x] Dong bo model du lieu trang quan ly package voi backend PackageDTO.
   - Hien tai: form su dung cac field khong trung backend.
   - Anh huong: Tao/sua package de loi payload.
+  - **DONE**: Updated AdminPackageManagement.jsx and AdminDashboard.jsx forms with correct PackageDTO fields (senderInfo, receiverInfo, latitude, longitude, packageDetails, codAmount, status, notes)
 - [ ] Them route Unauthorized va trang 403 don gian cho frontend.
 
 ### 2.2 On dinh hoa xu ly loi

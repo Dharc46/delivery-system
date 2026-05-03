@@ -7,6 +7,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import ShipperDashboard from './pages/ShipperDashboard';
 import CustomerTracking from './pages/CustomerTracking';
 import HomePage from './pages/HomePage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 import Header from './components/Header';
 import PrivateRoute from './components/PrivateRoute';
 import './App.css';
@@ -152,6 +153,22 @@ function RouterWrapper() {
                     layout
                   >
                     <HomePage />
+                  </motion.div>
+                }
+              />
+              <Route
+                path="/unauthorized"
+                element={
+                  <motion.div
+                    key="unauthorized-page"
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                    layout
+                  >
+                    <UnauthorizedPage />
                   </motion.div>
                 }
               />
