@@ -13,10 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder; // <--- Thêm import này nếu bạn dùng cách 1b (Fully Qualified URL)
 
 import java.io.IOException;
 import java.util.List;
@@ -74,8 +72,7 @@ public class ShipperController {
                 //         .toUriString();
 
             } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseEntity.status(500).build();
+                throw new RuntimeException("Failed to upload proof image", e);
             }
         } else {
             finalImageUrl = null; // Gán null nếu không có ảnh, để biến là effectively final trong mọi trường hợp

@@ -1,13 +1,16 @@
 package com.example.deliverysystem.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorDetails {
-    private LocalDateTime timestamp;
+    private String errorCode;
     private String message;
-    private String details;
+    private Instant timestamp;
+    private String traceId;
 }
