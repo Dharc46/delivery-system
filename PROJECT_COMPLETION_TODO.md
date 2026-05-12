@@ -55,7 +55,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 ## 4) Uu tien P2 - Chat luong code, hieu nang, do tin cay
 
 ### 4.1 Database va migration
-- [ ] Them migration tool (Flyway hoac Liquibase).
+- [x] Them migration tool (Flyway hoac Liquibase).
 - [ ] Chuyen tu ddl-auto=update sang migration co version.
 - [ ] Them index cho cac cot tim kiem/chuan hoa truy van thuong dung.
 
