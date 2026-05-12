@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import authApi from '../api/authApi';
 import { jwtDecode } from 'jwt-decode';
+import AuthMessage from '../components/AuthMessage';
+import { consumeAuthFlashMessage } from '../utils/authMessages';
 import './LoginPage.css';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [authMessage, setAuthMessage] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const messageFromState = location.state?.authMessage || '';
+        if (messageFromState) {
+            setAuthMessage(messageFromState);
+            return;
+        }
+
+        const flashMessage = consumeAuthFlashMessage();
+        if (flashMessage) {
+            setAuthMessage(flashMessage);
+        }
+    }, [location.state]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -30,7 +47,7 @@ const LoginPage = () => {
             } else {
                 navigate('/');
             }
-        } catch (err) {
+        } catch {
             setError('Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.');
         }
     };
@@ -40,6 +57,7 @@ const LoginPage = () => {
             <div className="modal-container">
                 <div className="modal-container-inner">
                     <h2 className="text-title">ShipNow</h2>
+                    <AuthMessage message={authMessage} />
                     {error && (
                         <p className="paragraph" style={{ color: 'red' }}>
                             {error}

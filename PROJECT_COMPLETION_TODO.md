@@ -26,8 +26,8 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 
 ### 2.2 On dinh hoa xu ly loi
 - [x] Bat lai GlobalExceptionHandler de tra loi API dong nhat.
-- [ ] Chuan hoa format loi (ma loi, message, timestamp, trace id neu co).
-- [ ] Xu ly 401/403 thong nhat o frontend (interceptor + redirect + message).
+- [x] Chuan hoa format loi (ma loi, message, timestamp, trace id neu co).
+- [x] Xu ly 401/403 thong nhat o frontend (interceptor + redirect + message).
 
 ### 2.3 Cau hinh moi truong va secret
 - [ ] Tach cau hinh dev/staging/prod bang profile.
