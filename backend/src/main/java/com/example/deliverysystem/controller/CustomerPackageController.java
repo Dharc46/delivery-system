@@ -22,8 +22,7 @@ public class CustomerPackageController {
     @Operation(summary = "Get package details by ID (for public tracking)")
     @GetMapping("/{packageId}")
     public ResponseEntity<PackageDTO> getPackageForCustomer(@PathVariable Long packageId) {
-        PackageDTO pkg = packageService.getPackageById(packageId); // Sử dụng cache của PackageService [cite: 62]
-        // Có thể filter thông tin nhạy cảm trước khi trả về khách hàng nếu cần
+        PackageDTO pkg = packageService.getPublicPackageById(packageId); // Trả về bản đã lọc cho public tracking
         return ResponseEntity.ok(pkg);
     }
 

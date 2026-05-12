@@ -3,6 +3,7 @@ package com.example.deliverysystem.service;
 import com.example.deliverysystem.dto.PackageDTO;
 import com.example.deliverysystem.exception.ResourceNotFoundException;
 import com.example.deliverysystem.model.Package;
+import com.example.deliverysystem.model.PackageStatus;
 import com.example.deliverysystem.repository.PackageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,6 +50,19 @@ public class PackageService {
     public PackageDTO getPackageById(Long id) {
         Package pkg = packageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));
+        return convertToDTO(pkg);
+    }
+
+    @Cacheable(value = "packages", key = "'public-' + #id")
+    public PackageDTO getPublicPackageById(Long id) {
+        Package pkg = packageRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));
+        return convertToPublicDTO(pkg);
+    }
+
+    public PackageDTO getPackageForShipper(Long packageId, Long shipperId) {
+        Package pkg = packageRepository.findByIdAndDeliveryTripShipperId(packageId, shipperId)
+                .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + packageId + " for shipperId: " + shipperId));
         return convertToDTO(pkg);
     }
 
@@ -95,6 +110,14 @@ public class PackageService {
         if (pkg.getDeliveryTrip() != null) {
             dto.setDeliveryTripId(pkg.getDeliveryTrip().getId());
         }
+        return dto;
+    }
+
+    private PackageDTO convertToPublicDTO(Package pkg) {
+        PackageDTO dto = convertToDTO(pkg);
+        dto.setPackageDetails(null);
+        dto.setCodAmount(null);
+        dto.setDeliveryTripId(null);
         return dto;
     }
 }

@@ -81,7 +81,9 @@ public class ShipperController {
             finalImageUrl = null; // Gán null nếu không có ảnh, để biến là effectively final trong mọi trường hợp
         }
 
-        PackageDTO updatedPackage = packageService.updatePackage(packageId, new PackageDTO() {{
+        PackageDTO currentPackage = packageService.getPackageForShipper(packageId, shipper.getId());
+
+        PackageDTO updatedPackage = packageService.updatePackage(currentPackage.getId(), new PackageDTO() {{
             setStatus(status);
             setNotes(notes);
             setProofOfDeliveryUrl(finalImageUrl); // Sử dụng biến đã đảm bảo effectively final
