@@ -3,11 +3,15 @@ package com.example.deliverysystem.repository;
 import com.example.deliverysystem.model.Package;
 import com.example.deliverysystem.model.PackageStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.Instant;
 import java.util.List;
 
 public interface PackageRepository extends JpaRepository<Package, Long> {
     List<Package> findByStatus(PackageStatus status);
     List<Package> findByStatusAndReconciledFalse(PackageStatus status);
+    List<Package> findByReconciledTrueOrderByReconciledAtDesc();
+    List<Package> findByReconciledTrueAndReconciledAtBetweenOrderByReconciledAtDesc(Instant from, Instant to);
     List<Package> findByDeliveryTripShipperId(Long shipperId);
     java.util.Optional<Package> findByIdAndReconciledFalse(Long id);
     java.util.Optional<Package> findByIdAndDeliveryTripShipperId(Long id, Long shipperId);
