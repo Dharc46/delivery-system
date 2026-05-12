@@ -40,7 +40,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 ### 3.1 Luong shipper va delivery trip
 - [x] Lay shipperId tu user dang nhap thay vi tra toan bo trip.
 - [x] Hoan thien filter du lieu theo role tren tat ca endpoint nhay cam.
-- [ ] Bo sung trang thai va validation luong giao hang (PENDING -> IN_TRANSIT -> DELIVERED/FAILED).
+- [x] Bo sung trang thai va validation luong giao hang (PENDING -> IN_TRANSIT -> DELIVERED/FAILED).
 
 ### 3.2 COD reconciliation
 - [ ] Them co da doi soat cho Package (vi du isReconciled + reconciledAt + reconciledBy).

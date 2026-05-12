@@ -32,7 +32,7 @@ public class PackageService {
         pkg.setLongitude(packageDTO.getLongitude());
         pkg.setPackageDetails(packageDTO.getPackageDetails());
         pkg.setCodAmount(packageDTO.getCodAmount());
-        pkg.setStatus(packageDTO.getStatus());
+        pkg.setStatus(PackageStatus.PENDING);
         pkg.setNotes(packageDTO.getNotes());
 
         Package savedPackage = packageRepository.save(pkg);
@@ -72,15 +72,36 @@ public class PackageService {
         Package existingPackage = packageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));
 
-        // Update fields from DTO
-        existingPackage.setSenderInfo(packageDTO.getSenderInfo());
-        existingPackage.setReceiverInfo(packageDTO.getReceiverInfo());
-        existingPackage.setLatitude(packageDTO.getLatitude());
-        existingPackage.setLongitude(packageDTO.getLongitude());
-        existingPackage.setPackageDetails(packageDTO.getPackageDetails());
-        existingPackage.setCodAmount(packageDTO.getCodAmount());
-        existingPackage.setStatus(packageDTO.getStatus());
-        existingPackage.setNotes(packageDTO.getNotes());
+        if (packageDTO.getSenderInfo() != null) {
+            existingPackage.setSenderInfo(packageDTO.getSenderInfo());
+        }
+        if (packageDTO.getReceiverInfo() != null) {
+            existingPackage.setReceiverInfo(packageDTO.getReceiverInfo());
+        }
+        if (packageDTO.getLatitude() != null) {
+            existingPackage.setLatitude(packageDTO.getLatitude());
+        }
+        if (packageDTO.getLongitude() != null) {
+            existingPackage.setLongitude(packageDTO.getLongitude());
+        }
+        if (packageDTO.getPackageDetails() != null) {
+            existingPackage.setPackageDetails(packageDTO.getPackageDetails());
+        }
+        if (packageDTO.getCodAmount() != null) {
+            existingPackage.setCodAmount(packageDTO.getCodAmount());
+        }
+        if (packageDTO.getNotes() != null) {
+            existingPackage.setNotes(packageDTO.getNotes());
+        }
+        if (packageDTO.getStatus() != null) {
+            PackageStatus currentStatus = existingPackage.getStatus();
+            if (!PackageStatus.isTransitionAllowed(currentStatus, packageDTO.getStatus())) {
+                throw new IllegalArgumentException(
+                        "Invalid package status transition from " + currentStatus + " to " + packageDTO.getStatus()
+                );
+            }
+            existingPackage.setStatus(packageDTO.getStatus());
+        }
         // proofOfDeliveryUrl và deliveryTrip sẽ được cập nhật bởi ShipperService/DeliveryTripService
 
         Package updatedPackage = packageRepository.save(existingPackage);

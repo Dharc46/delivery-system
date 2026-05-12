@@ -31,4 +31,22 @@ public enum PackageStatus implements Serializable {
     public boolean isSuccessful() {
         return this == DELIVERED;
     }
+
+    public static boolean isTransitionAllowed(PackageStatus currentStatus, PackageStatus nextStatus) {
+        if (nextStatus == null) {
+            return true;
+        }
+
+        PackageStatus normalizedCurrentStatus = currentStatus != null ? currentStatus : PENDING;
+
+        if (normalizedCurrentStatus == nextStatus) {
+            return true;
+        }
+
+        return switch (normalizedCurrentStatus) {
+            case PENDING -> nextStatus == IN_TRANSIT || nextStatus == CANCELLED;
+            case IN_TRANSIT -> nextStatus == DELIVERED || nextStatus == FAILED || nextStatus == CANCELLED;
+            case DELIVERED, FAILED, CANCELLED -> false;
+        };
+    }
 }
