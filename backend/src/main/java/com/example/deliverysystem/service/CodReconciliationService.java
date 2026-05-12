@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,13 +37,9 @@ public class CodReconciliationService {
         double totalCodAmount = 0.0;
         String reconciledBy = authentication != null ? authentication.getName() : "system";
 
-        for (Long packageId : packageIds) {
-            Package pkg = packageRepository.findById(packageId)
+        for (Long packageId : new LinkedHashSet<>(packageIds)) {
+            Package pkg = packageRepository.findByIdAndReconciledFalse(packageId)
                     .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + packageId));
-
-            if (pkg.isReconciled()) {
-                throw new IllegalArgumentException("Package " + packageId + " has already been reconciled");
-            }
 
             if (pkg.getStatus() != PackageStatus.DELIVERED) {
                 throw new IllegalArgumentException("Package " + packageId + " is not delivered yet");

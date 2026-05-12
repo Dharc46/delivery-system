@@ -9,6 +9,7 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
     List<Package> findByStatus(PackageStatus status);
     List<Package> findByStatusAndReconciledFalse(PackageStatus status);
     List<Package> findByDeliveryTripShipperId(Long shipperId);
+    java.util.Optional<Package> findByIdAndReconciledFalse(Long id);
     java.util.Optional<Package> findByIdAndDeliveryTripShipperId(Long id, Long shipperId);
     List<Package> findByReceiverInfoContaining(String receiverPhone); // Để tìm kiếm theo SĐT người nhận [cite: 26]
 }

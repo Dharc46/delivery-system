@@ -1,6 +1,6 @@
 # Delivery System - Checklist Hoan Thien Du An
 
-Ngay cap nhat: 2026-04-20
+Ngay cap nhat: 2026-05-12
 Trang thai hien tai: Co khung san pham tot, nhung con thieu nhieu phan de san sang production.
 
 ## 1) Muc tieu hoan thien
@@ -44,7 +44,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 
 ### 3.2 COD reconciliation
 - [x] Them co da doi soat cho Package (vi du isReconciled + reconciledAt + reconciledBy).
-- [ ] Dam bao mot don hang COD khong the doi soat lap.
+- [x] Dam bao mot don hang COD khong the doi soat lap.
 - [ ] Tao bao cao doi soat theo ngay/shipper/trip.
 
 ### 3.3 Tracking cho khach hang
