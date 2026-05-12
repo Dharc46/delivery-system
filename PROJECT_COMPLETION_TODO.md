@@ -38,7 +38,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 ## 3) Uu tien P1 - Hoan thien nghiep vu cot loi
 
 ### 3.1 Luong shipper va delivery trip
-- [ ] Lay shipperId tu user dang nhap thay vi tra toan bo trip.
+- [x] Lay shipperId tu user dang nhap thay vi tra toan bo trip.
 - [ ] Hoan thien filter du lieu theo role tren tat ca endpoint nhay cam.
 - [ ] Bo sung trang thai va validation luong giao hang (PENDING -> IN_TRANSIT -> DELIVERED/FAILED).
 

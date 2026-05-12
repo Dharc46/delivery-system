@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface DeliveryTripRepository extends JpaRepository<DeliveryTrip, Long> {
+    List<DeliveryTrip> findByShipperId(Long shipperId);
     List<DeliveryTrip> findByShipperIdAndTripDate(Long shipperId, LocalDate tripDate);
     List<DeliveryTrip> findByStatus(TripStatus status);
 }

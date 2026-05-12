@@ -57,6 +57,13 @@ public class DeliveryTripService {
                 .collect(Collectors.toList());
     }
 
+    public List<DeliveryTripDTO> getDeliveryTripsForShipper(Long shipperId) {
+        return deliveryTripRepository.findByShipperId(shipperId).stream()
+                .sorted(Comparator.comparingLong(DeliveryTrip::getId).reversed())
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public DeliveryTripDTO optimizeAndCreateTrip(Long shipperId, List<Long> packageIds) {
         if (packageIds == null || packageIds.isEmpty()) {

@@ -2,9 +2,12 @@ package com.example.deliverysystem.controller;
 
 import com.example.deliverysystem.dto.DeliveryTripDTO;
 import com.example.deliverysystem.dto.PackageDTO;
+import com.example.deliverysystem.exception.ResourceNotFoundException;
 import com.example.deliverysystem.model.PackageStatus;
+import com.example.deliverysystem.model.Shipper;
 import com.example.deliverysystem.service.DeliveryTripService;
 import com.example.deliverysystem.service.PackageService;
+import com.example.deliverysystem.repository.ShipperRepository;
 import com.example.deliverysystem.service.storage.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,17 +32,17 @@ public class ShipperController {
 
     private final DeliveryTripService deliveryTripService;
     private final PackageService packageService;
+    private final ShipperRepository shipperRepository;
     private final FileService fileService;
 
     @Operation(summary = "Get all delivery trips for the authenticated shipper")
     @GetMapping("/trips")
     public ResponseEntity<List<DeliveryTripDTO>> getAllDeliveryTripsForShipper(Authentication authentication) {
         String username = authentication.getName();
-        // TODO: Logic để lấy shipperId từ username
-        // Ví dụ: Shipper shipper = shipperRepository.findByUserUsername(username).orElseThrow(...);
-        // Sau đó dùng shipper.getId();
-        // Hiện tại trả về tất cả, sau này cần lọc theo shipperId
-        return ResponseEntity.ok(deliveryTripService.getAllDeliveryTrips());
+        Shipper shipper = shipperRepository.findByUserUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Shipper not found for authenticated user " + username));
+
+        return ResponseEntity.ok(deliveryTripService.getDeliveryTripsForShipper(shipper.getId()));
     }
 
     @Operation(summary = "Update package status and upload proof of delivery")
