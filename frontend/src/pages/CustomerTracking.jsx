@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/api';
+import { resolveFileUrl } from '../utils/fileUrl';
 
 const CustomerTracking = () => {
     const { id } = useParams();
@@ -360,7 +361,7 @@ const CustomerTracking = () => {
                                 }}>
                                     <h4 style={{ margin: '0 0 1rem 0', color: '#2c3e50' }}>📸 Bằng chứng giao hàng</h4>
                                     <img 
-                                        src={`http://localhost:8080${packageData.proofOfDeliveryUrl}`} 
+                                        src={resolveFileUrl(packageData.proofOfDeliveryUrl)} 
                                         alt="Proof of Delivery" 
                                         style={{ 
                                             maxWidth: '100%', 
