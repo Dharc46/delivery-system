@@ -43,7 +43,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 - [x] Bo sung trang thai va validation luong giao hang (PENDING -> IN_TRANSIT -> DELIVERED/FAILED).
 
 ### 3.2 COD reconciliation
-- [ ] Them co da doi soat cho Package (vi du isReconciled + reconciledAt + reconciledBy).
+- [x] Them co da doi soat cho Package (vi du isReconciled + reconciledAt + reconciledBy).
 - [ ] Dam bao mot don hang COD khong the doi soat lap.
 - [ ] Tao bao cao doi soat theo ngay/shipper/trip.
 

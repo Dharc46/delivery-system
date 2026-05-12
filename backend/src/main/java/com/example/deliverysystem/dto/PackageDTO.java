@@ -37,6 +37,12 @@ public class PackageDTO implements Serializable {
     private String notes;
     
     private String proofOfDeliveryUrl;
+
+    private Boolean reconciled;
+
+    private String reconciledBy;
+
+    private java.time.Instant reconciledAt;
     
     private Long deliveryTripId;
     

@@ -5,11 +5,13 @@ import com.example.deliverysystem.model.Package;
 import com.example.deliverysystem.model.PackageStatus;
 import com.example.deliverysystem.repository.PackageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,31 +24,41 @@ public class CodReconciliationService {
     // Lấy các đơn hàng đã giao thành công và có COD để đối soát
     @Cacheable(value = "codReconciliation", key = "'pending'") // Cache kết quả 
     public List<Package> getPackagesForCodReconciliation() {
-        // Lấy tất cả các đơn hàng đã DELIVERED và có COD (hoặc chưa được đối soát nếu có trường cờ)
-        // Hiện tại, giả định tất cả các đơn hàng DELIVERED có COD cần được đối soát
-        return packageRepository.findByStatus(PackageStatus.DELIVERED).stream()
+        return packageRepository.findByStatusAndReconciledFalse(PackageStatus.DELIVERED).stream()
                 .filter(p -> p.getCodAmount() != null && p.getCodAmount() > 0)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     @CacheEvict(value = {"codReconciliation", "dashboardStats"}, allEntries = true) // Xóa cache sau khi đối soát
-    public String confirmCodReconciliation(List<Long> packageIds) {
+    public String confirmCodReconciliation(List<Long> packageIds, Authentication authentication) {
         int reconciledCount = 0;
         double totalCodAmount = 0.0;
+        String reconciledBy = authentication != null ? authentication.getName() : "system";
 
         for (Long packageId : packageIds) {
             Package pkg = packageRepository.findById(packageId)
                     .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + packageId));
 
-            // Chỉ xác nhận COD cho các đơn hàng đã giao thành công và có COD
-            if (pkg.getStatus() == PackageStatus.DELIVERED && pkg.getCodAmount() != null && pkg.getCodAmount() > 0) {
-                // TODO: Đánh dấu đơn hàng này là đã đối soát. Cần thêm một trường 'isReconciled' vào Package Entity
-                // pkg.setIsReconciled(true);
-                packageRepository.save(pkg);
-                reconciledCount++;
-                totalCodAmount += pkg.getCodAmount();
+            if (pkg.isReconciled()) {
+                throw new IllegalArgumentException("Package " + packageId + " has already been reconciled");
             }
+
+            if (pkg.getStatus() != PackageStatus.DELIVERED) {
+                throw new IllegalArgumentException("Package " + packageId + " is not delivered yet");
+            }
+
+            if (pkg.getCodAmount() == null || pkg.getCodAmount() <= 0) {
+                throw new IllegalArgumentException("Package " + packageId + " has no COD amount to reconcile");
+            }
+
+            pkg.setReconciled(true);
+            pkg.setReconciledAt(Instant.now());
+            pkg.setReconciledBy(reconciledBy);
+            packageRepository.save(pkg);
+
+            reconciledCount++;
+            totalCodAmount += pkg.getCodAmount();
         }
         return String.format("Successfully reconciled %d packages with total COD amount: %.2f", reconciledCount, totalCodAmount);
     }

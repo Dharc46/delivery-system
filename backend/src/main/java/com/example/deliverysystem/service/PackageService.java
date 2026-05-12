@@ -34,6 +34,7 @@ public class PackageService {
         pkg.setCodAmount(packageDTO.getCodAmount());
         pkg.setStatus(PackageStatus.PENDING);
         pkg.setNotes(packageDTO.getNotes());
+        pkg.setReconciled(false);
 
         Package savedPackage = packageRepository.save(pkg);
         return convertToDTO(savedPackage);
@@ -128,6 +129,9 @@ public class PackageService {
         dto.setStatus(pkg.getStatus());
         dto.setNotes(pkg.getNotes());
         dto.setProofOfDeliveryUrl(pkg.getProofOfDeliveryUrl());
+        dto.setReconciled(pkg.isReconciled());
+        dto.setReconciledAt(pkg.getReconciledAt());
+        dto.setReconciledBy(pkg.getReconciledBy());
         if (pkg.getDeliveryTrip() != null) {
             dto.setDeliveryTripId(pkg.getDeliveryTrip().getId());
         }
@@ -138,6 +142,9 @@ public class PackageService {
         PackageDTO dto = convertToDTO(pkg);
         dto.setPackageDetails(null);
         dto.setCodAmount(null);
+        dto.setReconciled(null);
+        dto.setReconciledAt(null);
+        dto.setReconciledBy(null);
         dto.setDeliveryTripId(null);
         return dto;
     }

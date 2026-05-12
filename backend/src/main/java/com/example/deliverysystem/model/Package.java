@@ -1,5 +1,6 @@
 package com.example.deliverysystem.model;
 
+import java.time.Instant;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,12 @@ public class Package {
 
     private String notes;
     private String proofOfDeliveryUrl; // URL ảnh bằng chứng giao hàng
+
+    private boolean reconciled;
+
+    private Instant reconciledAt;
+
+    private String reconciledBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_trip_id")

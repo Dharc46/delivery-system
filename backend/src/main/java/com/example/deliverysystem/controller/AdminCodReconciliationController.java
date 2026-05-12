@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class AdminCodReconciliationController {
 
     @Operation(summary = "Confirm COD reconciliation for selected packages")
     @PostMapping("/confirm")
-    public ResponseEntity<String> confirmCodReconciliation(@RequestBody List<Long> packageIds) {
-        String result = codReconciliationService.confirmCodReconciliation(packageIds);
+    public ResponseEntity<String> confirmCodReconciliation(@RequestBody List<Long> packageIds, Authentication authentication) {
+        String result = codReconciliationService.confirmCodReconciliation(packageIds, authentication);
         return ResponseEntity.ok(result);
     }
 }
