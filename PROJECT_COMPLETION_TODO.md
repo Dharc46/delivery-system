@@ -33,7 +33,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 - [x] Tach cau hinh dev/staging/prod bang profile.
 - [x] Dua JWT secret, DB credentials, Redis config sang bien moi truong.
 - [x] Tat debug log qua chi tiet o production.
-- [ ] Cau hinh CORS theo tung moi truong (khong hardcode 1 origin).
+- [x] Cau hinh CORS theo tung moi truong (khong hardcode 1 origin).
 
 ## 3) Uu tien P1 - Hoan thien nghiep vu cot loi
 
