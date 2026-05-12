@@ -43,6 +43,16 @@ public class PackageDTO implements Serializable {
     private String reconciledBy;
 
     private java.time.Instant reconciledAt;
+
+    private Double shipperLatitude;
+
+    private Double shipperLongitude;
+
+    private Double estimatedDistanceKm;
+
+    private Integer etaMinutes;
+
+    private java.time.Instant estimatedArrivalAt;
     
     private Long deliveryTripId;
     

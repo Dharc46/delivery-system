@@ -2,8 +2,10 @@ package com.example.deliverysystem.service;
 
 import com.example.deliverysystem.dto.PackageDTO;
 import com.example.deliverysystem.exception.ResourceNotFoundException;
+import com.example.deliverysystem.model.DeliveryTrip;
 import com.example.deliverysystem.model.Package;
 import com.example.deliverysystem.model.PackageStatus;
+import com.example.deliverysystem.model.Shipper;
 import com.example.deliverysystem.repository.PackageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,6 +13,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +52,7 @@ public class PackageService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "packages", key = "#id")
     public PackageDTO getPackageById(Long id) {
         Package pkg = packageRepository.findById(id)
@@ -54,6 +60,7 @@ public class PackageService {
         return convertToDTO(pkg);
     }
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "packages", key = "'public-' + #id")
     public PackageDTO getPublicPackageById(Long id) {
         Package pkg = packageRepository.findById(id)
@@ -146,6 +153,51 @@ public class PackageService {
         dto.setReconciledAt(null);
         dto.setReconciledBy(null);
         dto.setDeliveryTripId(null);
+        applyTrackingInfo(dto, pkg);
         return dto;
+    }
+
+    private void applyTrackingInfo(PackageDTO dto, Package pkg) {
+        DeliveryTrip trip = pkg.getDeliveryTrip();
+        if (trip == null) {
+            return;
+        }
+
+        Shipper shipper = trip.getShipper();
+        if (shipper == null || shipper.getCurrentLatitude() == null || shipper.getCurrentLongitude() == null) {
+            return;
+        }
+
+        if (pkg.getLatitude() == null || pkg.getLongitude() == null) {
+            return;
+        }
+
+        double distanceKm = haversineKm(
+                shipper.getCurrentLatitude(),
+                shipper.getCurrentLongitude(),
+                pkg.getLatitude(),
+                pkg.getLongitude()
+        );
+        int etaMinutes = Math.max(1, (int) Math.ceil((distanceKm / 30.0) * 60.0));
+
+        dto.setShipperLatitude(shipper.getCurrentLatitude());
+        dto.setShipperLongitude(shipper.getCurrentLongitude());
+        dto.setEstimatedDistanceKm(roundToTwoDecimals(distanceKm));
+        dto.setEtaMinutes(etaMinutes);
+        dto.setEstimatedArrivalAt(Instant.now().plusSeconds(etaMinutes * 60L));
+    }
+
+    private double haversineKm(double lat1, double lon1, double lat2, double lon2) {
+        double radiusKm = 6371.0;
+        double deltaLat = Math.toRadians(lat2 - lat1);
+        double deltaLon = Math.toRadians(lon2 - lon1);
+        double a = Math.pow(Math.sin(deltaLat / 2), 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.pow(Math.sin(deltaLon / 2), 2);
+        return 2 * radiusKm * Math.asin(Math.sqrt(a));
+    }
+
+    private double roundToTwoDecimals(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 }

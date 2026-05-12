@@ -17,7 +17,7 @@ const CustomerTracking = () => {
         try {
             const response = await api.get(`/customer/packages/${packageId}`);
             setPackageData(response.data);
-        } catch (err) {
+        } catch {
             setError('Không tìm thấy gói hàng với ID này.');
             setPackageData(null);
         } finally {
@@ -57,6 +57,11 @@ const CustomerTracking = () => {
             style: 'currency',
             currency: 'VND'
         }).format(amount);
+    };
+
+    const formatEta = (instantValue) => {
+        if (!instantValue) return 'Chưa có ETA';
+        return new Date(instantValue).toLocaleString('vi-VN');
     };
 
     // Nếu ID có trong URL, tự động fetch data
@@ -222,6 +227,46 @@ const CustomerTracking = () => {
                                     }}>
                                         {getStatusText(packageData.status)}
                                     </span>
+                                </div>
+                            </div>
+
+                            {/* ETA & Shipper Location */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <div style={{
+                                    backgroundColor: 'white',
+                                    padding: '1rem',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e0e6ed'
+                                }}>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#2c3e50' }}>⏱ ETA dự kiến</h4>
+                                    <p style={{ margin: 0, lineHeight: '1.5' }}>
+                                        {formatEta(packageData.estimatedArrivalAt)}
+                                    </p>
+                                    {packageData.etaMinutes != null && (
+                                        <p style={{ margin: '0.5rem 0 0 0', color: '#7f8c8d' }}>
+                                            Còn khoảng {packageData.etaMinutes} phút
+                                        </p>
+                                    )}
+                                </div>
+                                <div style={{
+                                    backgroundColor: 'white',
+                                    padding: '1rem',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e0e6ed'
+                                }}>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', color: '#2c3e50' }}>📍 Vị trí shipper</h4>
+                                    {packageData.shipperLatitude != null && packageData.shipperLongitude != null ? (
+                                        <p style={{ margin: 0, lineHeight: '1.5' }}>
+                                            {packageData.shipperLatitude.toFixed(6)}, {packageData.shipperLongitude.toFixed(6)}
+                                        </p>
+                                    ) : (
+                                        <p style={{ margin: 0, lineHeight: '1.5' }}>Chưa có dữ liệu vị trí hiện tại</p>
+                                    )}
+                                    {packageData.estimatedDistanceKm != null && (
+                                        <p style={{ margin: '0.5rem 0 0 0', color: '#7f8c8d' }}>
+                                            Khoảng cách ước tính: {packageData.estimatedDistanceKm} km
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
