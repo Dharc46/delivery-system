@@ -147,8 +147,14 @@ public class PackageService {
 
     private PackageDTO convertToPublicDTO(Package pkg) {
         PackageDTO dto = convertToDTO(pkg);
+        dto.setSenderInfo(null);
+        dto.setReceiverInfo(null);
+        dto.setLatitude(null);
+        dto.setLongitude(null);
         dto.setPackageDetails(null);
         dto.setCodAmount(null);
+        dto.setNotes(null);
+        dto.setProofOfDeliveryUrl(null);
         dto.setReconciled(null);
         dto.setReconciledAt(null);
         dto.setReconciledBy(null);

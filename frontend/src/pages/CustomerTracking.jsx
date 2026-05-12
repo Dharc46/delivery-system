@@ -201,6 +201,19 @@ const CustomerTracking = () => {
                             📦 Chi tiết gói hàng #{packageData.id}
                         </h3>
 
+                        <div style={{
+                            marginBottom: '1rem',
+                            padding: '0.85rem 1rem',
+                            borderRadius: '8px',
+                            backgroundColor: '#eef6ff',
+                            color: '#1f4b7a',
+                            border: '1px solid #b9d7ff',
+                            fontSize: '14px',
+                            lineHeight: '1.5'
+                        }}>
+                            Một số thông tin nhạy cảm đã được ẩn để bảo vệ quyền riêng tư của khách hàng và shipper.
+                        </div>
+
                         <div style={{ display: 'grid', gap: '1rem' }}>
                             {/* Status */}
                             <div style={{

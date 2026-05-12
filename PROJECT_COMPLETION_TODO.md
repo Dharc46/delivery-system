@@ -49,7 +49,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 
 ### 3.3 Tracking cho khach hang
 - [x] Them API ETA va vi tri shipper theo package.
-- [ ] Quy dinh du lieu cong khai cho khach (an thong tin nhay cam).
+- [x] Quy dinh du lieu cong khai cho khach (an thong tin nhay cam).
 - [ ] Hien thi URL anh giao hang qua bien moi truong frontend, khong hardcode localhost.
 
 ## 4) Uu tien P2 - Chat luong code, hieu nang, do tin cay
