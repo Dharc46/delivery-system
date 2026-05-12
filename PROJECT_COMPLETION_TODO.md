@@ -60,7 +60,8 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 - [x] Them index cho cac cot tim kiem/chuan hoa truy van thuong dung.
 
 ### 4.2 Caching va hieu nang
-- [ ] Ra soat cache key, TTL va chinh sach cache eviction.
+- [x] Ra soat cache key, TTL va chinh sach cache eviction.
+  - **DONE**: Created CACHE_REVIEW.md with detailed analysis, naming convention, TTL strategy, and implementation templates
 - [ ] Them cache cho cac API dashboard/tracking co tan suat cao (neu phu hop).
 - [ ] Do benchmark co ban (response time p95, throughput).
 
