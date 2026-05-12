@@ -57,7 +57,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 ### 4.1 Database va migration
 - [x] Them migration tool (Flyway hoac Liquibase).
 - [x] Chuyen tu ddl-auto=update sang migration co version.
-- [ ] Them index cho cac cot tim kiem/chuan hoa truy van thuong dung.
+- [x] Them index cho cac cot tim kiem/chuan hoa truy van thuong dung.
 
 ### 4.2 Caching va hieu nang
 - [ ] Ra soat cache key, TTL va chinh sach cache eviction.
