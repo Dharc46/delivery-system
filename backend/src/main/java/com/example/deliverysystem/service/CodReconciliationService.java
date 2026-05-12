@@ -110,7 +110,7 @@ public class CodReconciliationService {
     }
 
     // Lấy các đơn hàng đã giao thành công và có COD để đối soát
-    @Cacheable(value = "codReconciliation", key = "'pending'") // Cache kết quả 
+    @Cacheable(value = "cod:pending", key = "'pending'")
     public List<Package> getPackagesForCodReconciliation() {
         return packageRepository.findByStatusAndReconciledFalse(PackageStatus.DELIVERED).stream()
                 .filter(p -> p.getCodAmount() != null && p.getCodAmount() > 0)
@@ -118,7 +118,7 @@ public class CodReconciliationService {
     }
 
     @Transactional
-    @CacheEvict(value = {"codReconciliation", "dashboardStats"}, allEntries = true) // Xóa cache sau khi đối soát
+    @CacheEvict(value = {"cod:pending", "dashboard:stats"}, allEntries = false)
     public String confirmCodReconciliation(List<Long> packageIds, Authentication authentication) {
         int reconciledCount = 0;
         double totalCodAmount = 0.0;

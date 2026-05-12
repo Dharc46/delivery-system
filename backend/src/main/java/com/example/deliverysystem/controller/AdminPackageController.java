@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,11 +34,22 @@ public class AdminPackageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPackage);
     }
 
-    @Operation(summary = "Get all packages")
+    @Operation(summary = "Get all packages with optional pagination")
     @GetMapping
-    public ResponseEntity<List<PackageDTO>> getAllPackages() {
-        List<PackageDTO> packages = packageService.getAllPackages();
-        return ResponseEntity.ok(packages);
+    public ResponseEntity<?> getAllPackages(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        
+        // If both page and size are default, return full list for backward compatibility
+        if (page == 0 && size == 20) {
+            List<PackageDTO> packages = packageService.getAllPackages();
+            return ResponseEntity.ok(packages);
+        }
+        
+        // Otherwise return paginated response
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PackageDTO> packagePage = packageService.getPackagesPageable(pageable);
+        return ResponseEntity.ok(packagePage);
     }
 
     @Operation(summary = "Get package by ID")

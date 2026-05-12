@@ -10,6 +10,8 @@ import com.example.deliverysystem.repository.PackageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,7 @@ public class PackageService {
     private final PackageRepository packageRepository;
 
     @Transactional
-    @CacheEvict(value = {"packages", "dashboardStats"}, allEntries = true) // Xóa cache khi thêm/sửa/xóa [cite: 35]
+    @CacheEvict(value = {"pkg:all", "dashboard:stats"}, allEntries = false)
     public PackageDTO createPackage(PackageDTO packageDTO) {
         Package pkg = new Package();
         // Map DTO to Entity
@@ -45,15 +47,25 @@ public class PackageService {
         return convertToDTO(savedPackage);
     }
 
-    @Cacheable(value = "packages") // Cache danh sách đơn hàng [cite: 35, 62]
+    @Cacheable(value = "pkg:all")
     public List<PackageDTO> getAllPackages() {
         return packageRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get packages with pagination support (not cached)
+     * Pagination allows efficient fetching of large package lists
+     */
     @Transactional(readOnly = true)
-    @Cacheable(value = "packages", key = "#id")
+    public Page<PackageDTO> getPackagesPageable(Pageable pageable) {
+        Page<Package> page = packageRepository.findAll(pageable);
+        return page.map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "pkg:id", key = "#id")
     public PackageDTO getPackageById(Long id) {
         Package pkg = packageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));
@@ -61,7 +73,7 @@ public class PackageService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "packages", key = "'public-' + #id")
+    @Cacheable(value = "pkg:public", key = "#id")
     public PackageDTO getPublicPackageById(Long id) {
         Package pkg = packageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));
@@ -75,7 +87,7 @@ public class PackageService {
     }
 
     @Transactional
-    @CacheEvict(value = {"packages", "dashboardStats"}, allEntries = true)
+    @CacheEvict(value = {"pkg:id", "pkg:all", "dashboard:stats"}, allEntries = false)
     public PackageDTO updatePackage(Long id, PackageDTO packageDTO) {
         Package existingPackage = packageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));
@@ -117,7 +129,7 @@ public class PackageService {
     }
 
     @Transactional
-    @CacheEvict(value = {"packages", "dashboardStats"}, allEntries = true)
+    @CacheEvict(value = {"pkg:id", "pkg:all", "dashboard:stats"}, allEntries = false)
     public void deletePackage(Long id) {
         packageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Package not found with id: " + id));

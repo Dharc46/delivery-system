@@ -10,9 +10,8 @@ import com.example.deliverysystem.repository.DeliveryTripRepository;
 import com.example.deliverysystem.repository.PackageRepository;
 import com.example.deliverysystem.repository.ShipperRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -28,6 +27,7 @@ public class DeliveryTripService {
     private final PackageRepository packageRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Cacheable(value = "delivery:trip:active", key = "#shipperId")
     public Optional<DeliveryTripDTO> findActiveTripForToday(Long shipperId) {
         List<DeliveryTrip> trips = deliveryTripRepository.findByShipperIdAndTripDate(shipperId, LocalDate.now());
         return trips.stream()
@@ -35,12 +35,14 @@ public class DeliveryTripService {
                 .map(this::convertToDTO);
     }
 
+    @Cacheable(value = "delivery:trip:id", key = "#id")
     public DeliveryTripDTO getDeliveryTripById(Long id) {
         DeliveryTrip trip = deliveryTripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("DeliveryTrip not found with id " + id));
         return convertToDTO(trip);
     }
 
+    @CacheEvict(value = {"delivery:trip:id", "delivery:trip:active", "delivery:trip:all", "dashboard:stats"}, allEntries = false)
     public DeliveryTripDTO updateDeliveryTripStatus(Long id, TripStatus status) {
         DeliveryTrip trip = deliveryTripRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("DeliveryTrip not found with id " + id));
@@ -49,6 +51,7 @@ public class DeliveryTripService {
         return convertToDTO(trip);
     }
 
+    @Cacheable(value = "delivery:trip:all")
     public List<DeliveryTripDTO> getAllDeliveryTrips() {
         // lấy toàn bộ trip và sort theo id giảm dần cho ổn định
         return deliveryTripRepository.findAll().stream()
@@ -57,6 +60,7 @@ public class DeliveryTripService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "delivery:trip:shipper", key = "#shipperId")
     public List<DeliveryTripDTO> getDeliveryTripsForShipper(Long shipperId) {
         return deliveryTripRepository.findByShipperId(shipperId).stream()
                 .sorted(Comparator.comparingLong(DeliveryTrip::getId).reversed())
@@ -65,6 +69,7 @@ public class DeliveryTripService {
     }
 
     @Transactional
+    @CacheEvict(value = {"delivery:trip:all", "delivery:trip:active", "delivery:trip:shipper", "pkg:all", "dashboard:stats"}, allEntries = false)
     public DeliveryTripDTO optimizeAndCreateTrip(Long shipperId, List<Long> packageIds) {
         if (packageIds == null || packageIds.isEmpty()) {
             throw new IllegalArgumentException("packageIds must not be empty");

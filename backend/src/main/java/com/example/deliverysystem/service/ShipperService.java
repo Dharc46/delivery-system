@@ -8,10 +8,8 @@ import com.example.deliverysystem.model.Shipper;
 import com.example.deliverysystem.model.User;
 import com.example.deliverysystem.repository.ShipperRepository;
 import com.example.deliverysystem.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +22,8 @@ public class ShipperService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional // Đảm bảo tính toàn vẹn dữ liệu [cite: 29]
+    @Transactional
+    @CacheEvict(value = {"shipper:all", "dashboard:stats"}, allEntries = false)
     public ShipperDTO createShipper(ShipperDTO shipperDTO) {
         // Tạo tài khoản User cho Shipper
         User user = new User();
@@ -44,12 +43,14 @@ public class ShipperService {
         return convertToDTO(savedShipper);
     }
 
+    @Cacheable(value = "shipper:all")
     public List<ShipperDTO> getAllShippers() {
         return shipperRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "shipper:id", key = "#id")
     public ShipperDTO getShipperById(Long id) {
         Shipper shipper = shipperRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shipper not found with id: " + id));
@@ -57,6 +58,7 @@ public class ShipperService {
     }
 
     @Transactional
+    @CacheEvict(value = {"shipper:id", "shipper:all", "dashboard:stats"}, allEntries = false)
     public ShipperDTO updateShipper(Long id, ShipperDTO shipperDTO) {
         Shipper existingShipper = shipperRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shipper not found with id: " + id));
@@ -78,6 +80,7 @@ public class ShipperService {
     }
 
     @Transactional
+    @CacheEvict(value = {"shipper:id", "shipper:all", "dashboard:stats"}, allEntries = false)
     public void deleteShipper(Long id) {
         Shipper shipper = shipperRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shipper not found with id: " + id));

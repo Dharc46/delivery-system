@@ -18,7 +18,7 @@ public class DashboardService {
     private final PackageRepository packageRepository;
     private final ShipperRepository shipperRepository;
 
-    @Cacheable(value = "dashboardStats") // Cache thống kê
+    @Cacheable(value = "dashboard:stats")
     public Map<String, Object> getDashboardStats() {
         Map<String, Object> stats = new HashMap<>();
 
