@@ -30,7 +30,7 @@ Du an duoc xem la hoan chinh khi dat dong thoi cac tieu chi sau:
 - [x] Xu ly 401/403 thong nhat o frontend (interceptor + redirect + message).
 
 ### 2.3 Cau hinh moi truong va secret
-- [ ] Tach cau hinh dev/staging/prod bang profile.
+- [x] Tach cau hinh dev/staging/prod bang profile.
 - [ ] Dua JWT secret, DB credentials, Redis config sang bien moi truong.
 - [ ] Tat debug log qua chi tiet o production.
 - [ ] Cau hinh CORS theo tung moi truong (khong hardcode 1 origin).
